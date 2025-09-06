@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-white py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold mb-3">{{ page_title }}</h1>
+        <p class="lead">Learn more about NCIBB and our mission</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Content -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-5">
+            <h2 class="h3 mb-4">About NCIBB</h2>
+            <p class="lead text-muted mb-4">
+              NCIBB (National Center for Integrative Bioinformatics and
+              Biotechnology) is a leading research institution dedicated to
+              advancing the field of computational biology and bioinformatics.
+            </p>
+
+            <h3 class="h4 mb-3">Our Mission</h3>
+            <p class="mb-4">
+              To provide cutting-edge bioinformatics solutions, foster
+              innovation in computational biology, and support researchers
+              worldwide in their quest to understand complex biological systems
+              through data-driven approaches.
+            </p>
+
+            <h3 class="h4 mb-3">Our Vision</h3>
+            <p class="mb-4">
+              To be the global leader in integrative bioinformatics, bridging
+              the gap between biological data and meaningful scientific insights
+              through advanced computational methods and collaborative research.
+            </p>
+
+            <h3 class="h4 mb-3">Core Values</h3>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="h6 mb-1">Excellence</h5>
+                    <p class="text-muted small mb-0">
+                      Commitment to the highest standards in research and
+                      service delivery
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="h6 mb-1">Innovation</h5>
+                    <p class="text-muted small mb-0">
+                      Pioneering new approaches in computational biology
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="h6 mb-1">Collaboration</h5>
+                    <p class="text-muted small mb-0">
+                      Working together with researchers and institutions
+                      worldwide
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="h6 mb-1">Integrity</h5>
+                    <p class="text-muted small mb-0">
+                      Maintaining the highest ethical standards in all our work
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="display-6 fw-bold mb-3">Our Expertise</h2>
+        <p class="lead text-muted">
+          Areas of specialization and research focus
+        </p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="text-center">
+          <div
+            class="expertise-icon bg-primary text-white rounded-circle mx-auto mb-3"
+          >
+            <i class="fas fa-dna fa-2x"></i>
+          </div>
+          <h5>Genomics</h5>
+          <p class="text-muted small">Genome analysis and annotation</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-center">
+          <div
+            class="expertise-icon bg-success text-white rounded-circle mx-auto mb-3"
+          >
+            <i class="fas fa-project-diagram fa-2x"></i>
+          </div>
+          <h5>Systems Biology</h5>
+          <p class="text-muted small">Network analysis and modeling</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-center">
+          <div
+            class="expertise-icon bg-info text-white rounded-circle mx-auto mb-3"
+          >
+            <i class="fas fa-brain fa-2x"></i>
+          </div>
+          <h5>Machine Learning</h5>
+          <p class="text-muted small">AI-driven biological insights</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-center">
+          <div
+            class="expertise-icon bg-warning text-white rounded-circle mx-auto mb-3"
+          >
+            <i class="fas fa-database fa-2x"></i>
+          </div>
+          <h5>Data Management</h5>
+          <p class="text-muted small">Large-scale data processing</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
