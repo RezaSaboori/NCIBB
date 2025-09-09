@@ -9,6 +9,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
+    
+    # API endpoints
+    path('api/auth/', include('authentication.urls')),
+    path('api/credits/', include('credits.urls')),
+    path('api/projects/', include('projects.urls')),
+    path('api/messaging/', include('messaging.urls')),
+    path('api/core/', include('core.urls')),
 ]
 
 if settings.DEBUG:

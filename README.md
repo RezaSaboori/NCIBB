@@ -1,23 +1,83 @@
-# NCIBB - National Center for Integrative Bioinformatics and Biotechnology
+# NCIBB - Professional User Management System
 
-A modern Django web application for bioinformatics research and services.
+A comprehensive Django + React user management system with JWT authentication, role-based permissions, and modern dashboard architecture.
 
-## Features
+## 🚀 Features
 
-- **Modern UI**: Clean, responsive design with Bootstrap 5
-- **Multi-page Site**: Home, About, and Contact pages
-- **Interactive Elements**: Smooth animations and user interactions
-- **Contact Form**: Functional contact form with validation
-- **Mobile Responsive**: Optimized for all device sizes
+### Backend (Django + DRF)
+- **JWT Authentication** with automatic token refresh
+- **Role-based permissions** (Admin, Manager, User, Guest)
+- **Custom User Model** with profiles and verification
+- **Credits System** with transaction tracking
+- **Project Management** with collaboration features
+- **Messaging System** with notifications
+- **REST API** with comprehensive endpoints
+- **Admin Panel** for user management
 
-## Technology Stack
+### Frontend (React + Material-UI)
+- **Responsive Dashboard** with Material-UI components
+- **Role-based UI rendering** based on user permissions
+- **Real-time data updates** with React hooks
+- **Professional admin panel** for user management
+- **Credit tracking and transaction history**
+- **Project collaboration interface**
+- **Inbox messaging system**
 
-- **Backend**: Django 4.2.7
-- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
-- **Icons**: Font Awesome 6
-- **Database**: SQLite (default)
+## 🛠️ Tech Stack
 
-## Installation
+### Backend
+- Django 4.2.7
+- Django REST Framework 3.14.0
+- JWT Authentication (djangorestframework-simplejwt)
+- PostgreSQL (production) / SQLite (development)
+- Celery + Redis (background tasks)
+- CORS headers for cross-origin requests
+
+### Frontend
+- React 19.1.1
+- Vite (build tool)
+- Material-UI 7.3.2
+- Redux Toolkit 2.9.0
+- React Router DOM 7.8.2
+- Axios for API calls
+- React Hook Form + Yup validation
+
+## 📁 Project Structure
+
+```
+NCIBB/
+├── backend/
+│   ├── authentication/          # User authentication & profiles
+│   ├── credits/                 # Credits system & transactions
+│   ├── projects/                # Project management
+│   ├── messaging/               # User messaging system
+│   ├── core/                    # Core utilities & admin stats
+│   └── ncibb/                   # Django settings
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── dashboard/       # Dashboard components
+│   │   │   ├── auth/           # Authentication forms
+│   │   │   ├── admin/          # Admin components
+│   │   │   └── common/         # Shared components
+│   │   ├── services/           # API services
+│   │   ├── store/              # Redux store
+│   │   └── pages/              # Page components
+│   └── public/
+├── docker-compose.yml
+├── Dockerfile
+└── requirements.txt
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- PostgreSQL (for production)
+- Redis (for background tasks)
+
+### Development Setup
 
 1. **Clone the repository**
    ```bash
@@ -25,138 +85,196 @@ A modern Django web application for bioinformatics research and services.
    cd NCIBB
    ```
 
-2. **Create a virtual environment**
+2. **Backend Setup**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
+   # Install Python dependencies
    pip install -r requirements.txt
-   ```
-
-4. **Run migrations**
-   ```bash
+   
+   # Run migrations
    python manage.py migrate
-   ```
-
-5. **Create a superuser (optional)**
-   ```bash
+   
+   # Create superuser
    python manage.py createsuperuser
+   
+   # Start development server
+   python manage.py runserver
    ```
 
-6. **Run the development server**
+3. **Frontend Setup**
    ```bash
-   python manage.py runserver 1234
+   cd frontend
+   
+   # Install dependencies
+   npm install
+   
+   # Start development server
+   npm run dev
    ```
 
-7. **Open your browser**
-   Navigate to `http://127.0.0.1:1234/`
+4. **Access the application**
+   - Backend API: http://localhost:8000/api/
+   - Frontend: http://localhost:3000
+   - Admin Panel: http://localhost:8000/admin/
 
-## Project Structure
+### Docker Setup
 
+1. **Using Docker Compose**
+   ```bash
+   # Start all services
+   docker-compose up --build
+   
+   # Run migrations
+   docker-compose exec backend python manage.py migrate
+   
+   # Create superuser
+   docker-compose exec backend python manage.py createsuperuser
+   ```
+
+2. **Access the application**
+   - Backend API: http://localhost:8000/api/
+   - Frontend: http://localhost:3000
+   - Admin Panel: http://localhost:8000/admin/
+
+## 🔐 Authentication
+
+### Default Admin Account
+- **Username**: admin
+- **Email**: admin@ncibb.com
+- **Password**: (set during superuser creation)
+
+### User Roles
+- **Admin**: Full system access, user management
+- **Manager**: Project management, user oversight
+- **User**: Standard user access
+- **Guest**: Limited access
+
+## 📚 API Endpoints
+
+### Authentication
+- `POST /api/auth/login/` - User login
+- `POST /api/auth/register/` - User registration
+- `POST /api/auth/logout/` - User logout
+- `GET /api/auth/dashboard/` - User dashboard data
+- `GET /api/auth/profile/` - User profile
+- `PATCH /api/auth/profile/` - Update profile
+
+### Credits
+- `GET /api/credits/` - User credit balance
+- `GET /api/credits/transactions/` - Credit transactions
+- `POST /api/credits/add/` - Add credits (admin only)
+- `POST /api/credits/spend/` - Spend credits
+
+### Projects
+- `GET /api/projects/` - List projects
+- `POST /api/projects/` - Create project
+- `GET /api/projects/{id}/` - Project details
+- `PATCH /api/projects/{id}/` - Update project
+- `DELETE /api/projects/{id}/` - Delete project
+
+### Messaging
+- `GET /api/messaging/messages/` - List messages
+- `POST /api/messaging/send/` - Send message
+- `GET /api/messaging/inbox/` - Inbox summary
+- `GET /api/messaging/notifications/` - Notifications
+
+## 🎨 Frontend Components
+
+### Dashboard Components
+- **UserDashboard**: Main user dashboard with stats and quick actions
+- **AdminDashboard**: Admin panel with user management and system stats
+
+### Authentication Components
+- **LoginForm**: User login with validation
+- **RegisterForm**: User registration with validation
+
+### Common Components
+- **ProtectedRoute**: Route protection based on authentication and roles
+
+## 🔧 Configuration
+
+### Environment Variables
+
+#### Backend (.env)
+```env
+SECRET_KEY=your-secret-key
+DEBUG=True
+DB_NAME=ncibb_db
+DB_USER=postgres
+DB_PASSWORD=password
+DB_HOST=localhost
+DB_PORT=5432
 ```
-NCIBB/
-├── manage.py
-├── requirements.txt
-├── README.md
-├── ncibb/
-│   ├── __init__.py
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-│   └── asgi.py
-├── main/
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── tests.py
-│   ├── urls.py
-│   └── views.py
-├── templates/
-│   ├── base.html
-│   └── main/
-│       ├── home.html
-│       ├── about.html
-│       └── contact.html
-└── static/
-    ├── css/
-    │   └── style.css
-    └── js/
-        └── main.js
+
+#### Frontend (.env)
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
-## Pages
+## 🚀 Deployment
 
-- **Home** (`/`): Landing page with hero section and feature overview
-- **About** (`/about/`): Information about NCIBB's mission and expertise
-- **Contact** (`/contact/`): Contact form and company information
+### Production Setup
 
-## Customization
+1. **Update settings for production**
+   ```python
+   # Use production settings
+   ENVIRONMENT=production
+   ```
 
-### Adding New Pages
+2. **Configure database**
+   ```bash
+   # Use PostgreSQL in production
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'ncibb_db',
+           'USER': 'postgres',
+           'PASSWORD': 'your-password',
+           'HOST': 'your-host',
+           'PORT': '5432',
+       }
+   }
+   ```
 
-1. Create a new view in `main/views.py`
-2. Add the URL pattern in `main/urls.py`
-3. Create a template in `templates/main/`
-4. Update the navigation in `templates/base.html`
+3. **Build and deploy**
+   ```bash
+   # Build frontend
+   cd frontend
+   npm run build
+   
+   # Deploy backend
+   python manage.py collectstatic
+   gunicorn ncibb.wsgi:application
+   ```
 
-### Styling
+## 🧪 Testing
 
-- Main styles: `static/css/style.css`
-- Uses Bootstrap 5 for responsive design
-- Custom CSS variables for consistent theming
-
-### JavaScript
-
-- Main functionality: `static/js/main.js`
-- Includes form validation, animations, and interactive features
-
-## Development
-
-### Running Tests
+### Backend Tests
 ```bash
 python manage.py test
 ```
 
-### Collecting Static Files
+### Frontend Tests
 ```bash
-python manage.py collectstatic
+cd frontend
+npm test
 ```
 
-### Database Management
-```bash
-# Create migrations
-python manage.py makemigrations
+## 📝 License
 
-# Apply migrations
-python manage.py migrate
-```
+This project is licensed under the MIT License.
 
-## Deployment
-
-For production deployment:
-
-1. Set `DEBUG = False` in `settings.py`
-2. Update `ALLOWED_HOSTS` with your domain
-3. Configure a production database
-4. Set up static file serving
-5. Use a production WSGI server like Gunicorn
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
+4. Add tests
 5. Submit a pull request
 
-## License
+## 📞 Support
 
-This project is licensed under the MIT License.
+For support and questions, please contact the development team or create an issue in the repository.
 
-## Contact
+---
 
-For questions or support, please contact us through the website contact form or email info@ncibb.org.
+**Built with ❤️ using Django, React, and Material-UI**
