@@ -1,0 +1,6 @@
+export * from "./HomePage"
+export * from "./AboutPage"
+export * from "./ContactPage"
+export * from "./ResourcesPage"
+export * from "./ServicesPage"
+export * from "./Page"

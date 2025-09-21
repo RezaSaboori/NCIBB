@@ -1,0 +1,326 @@
+/* Import theme variables from global theme.css */
+@import "../../../styles/theme.css";
+
+:root {
+  /* Header specific overrides using theme variables */
+  --header-height: 2.5rem;
+  --header-icon-size: 2.5rem;
+  --header-menu-height: 1.9rem;
+  --header-spacing: var(--spacing-sm);
+  --header-font-size: var(--font-size-sm);
+  --header-border-radius: var(--border-radius-pill);
+  --header-motion-duration: var(--motion-duration-normal);
+  --header-motion-easing: var(--motion-easing-easeInOut);
+}
+
+.header-container {
+  position: fixed;
+  z-index: 1;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--header-spacing);
+  font-family: var(--font-family-persian);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  height: var(--header-height);
+  box-sizing: border-box;
+  padding: 0;
+  border: none;
+  border-radius: var(--header-border-radius);
+  font-size: var(--header-font-size);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-persian);
+  background-color: color-mix(in srgb, var(--color-gray4) 12%, transparent);
+  backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
+  -webkit-backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #fff calc(1 * 10%), transparent),
+    inset 1.8px 3px 0px -2px color-mix(in srgb, #fff calc(1 * 90%), transparent),
+    inset -2px -2px 0px -2px color-mix(in srgb, #fff calc(1 * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, #fff calc(1 * 60%), transparent),
+    inset -0.3px -1px 4px 0px
+      color-mix(in srgb, #000 calc(1 * 12%), transparent),
+    inset -1.5px 2.5px 0px -2px
+      color-mix(in srgb, #000 calc(1 * 20%), transparent),
+    inset 0px 3px 4px -2px color-mix(in srgb, #000 calc(1 * 20%), transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000 calc(1 * 10%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 10%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 8%), transparent);
+  transition:
+    background-color var(--motion-duration-slow) var(--motion-easing-easeInOut),
+    box-shadow var(--motion-duration-slow) var(--motion-easing-easeInOut);
+}
+
+.header-nav--main {
+  direction: rtl;
+}
+
+.header-nav--icon {
+  width: var(--header-icon-size);
+  height: var(--header-icon-size);
+  border-radius: 50%;
+  justify-content: center;
+  align-self: center;
+  padding: var(--spacing-sm);
+}
+
+.header-nav--icon .header-nav__control {
+  width: 100%;
+  height: 100%;
+}
+
+.header-nav__legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.header-nav__input {
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.header-nav__control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-gray7);
+  cursor: pointer;
+  font-family: var(--font-family-persian);
+  transition: color var(--header-motion-duration) var(--header-motion-easing);
+}
+
+.header-nav__control:hover {
+  color: var(--color-blue);
+}
+
+.header-nav__control--active {
+  color: var(--color-blue);
+}
+
+.header-nav__menu {
+  display: flex;
+  height: var(--header-menu-height);
+  margin: 0 var(--spacing-xs) 0 var(--spacing-xs);
+  border-radius: var(--header-border-radius);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.header-nav__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1px var(--spacing-md) 0px var(--spacing-md);
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: var(--header-border-radius);
+  opacity: 1;
+  color: var(--color-gray10);
+  font-family: var(--font-family-persian);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--header-motion-duration) var(--header-motion-easing);
+}
+
+.header-nav__item:hover {
+  color: var(--color-blue);
+  cursor: pointer;
+}
+
+.header-nav__icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.header-nav__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin: 0;
+}
+
+.header-nav__control:focus,
+.header-nav__control:focus-visible,
+.header-nav__control:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.header-nav__control {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header-nav__item:has(input:checked) {
+  color: var(--color-gray1);
+  cursor: auto;
+}
+
+.header-nav__menu::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  left: 0;
+  width: var(--active-indicator-width);
+  transform: translateX(var(--active-indicator-left));
+  transition:
+    transform var(--motion-duration-slow) var(--motion-easing-easeInOut),
+    width var(--motion-duration-slow) var(--motion-easing-easeInOut);
+  display: block;
+  border-radius: var(--border-radius-pill);
+  background-color: color-mix(in srgb, var(--color-blue) 80%, transparent);
+  z-index: -1;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #01eeff 20%, transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, #01eeff 90%, transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, #01eeff 80%, transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, #01eeff 60%, transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, #001130 25%, transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, #000820 15%, transparent),
+    inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
+}
+
+/* Dark mode styles using theme variables */
+[data-theme="dark"] .header-nav {
+  background-color: color-mix(in srgb, var(--color-gray3) 15%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-gray8) 4%, transparent),
+    inset 1.8px 3px 0px -2px
+      color-mix(in srgb, var(--color-gray8) 12%, transparent),
+    inset -2px -2px 0px -2px
+      color-mix(in srgb, var(--color-gray8) 10%, transparent),
+    inset -3px -8px 1px -6px
+      color-mix(in srgb, var(--color-gray8) 8%, transparent),
+    inset -0.3px -1px 4px 0px
+      color-mix(in srgb, #000 calc(1 * 25%), transparent),
+    inset -1.5px 2.5px 0px -2px
+      color-mix(in srgb, #000 calc(1 * 30%), transparent),
+    inset 0px 3px 4px -2px color-mix(in srgb, #000 calc(1 * 30%), transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000 calc(1 * 25%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 12%), transparent);
+}
+
+[data-theme="dark"] .header-nav__menu::after {
+  background-color: color-mix(in srgb, var(--color-blue) 90%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #01eeff 20%, transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, #01eeff 90%, transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, #01eeff 80%, transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, #01eeff 60%, transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, #001130 25%, transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, #000820 15%, transparent),
+    inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
+}
+
+[data-theme="dark"] .header-nav__item {
+  color: var(--color-red);
+}
+
+[data-theme="dark"] .header-nav__item:has(input:checked) {
+  color: var(--color-gray1);
+}
+
+[data-theme="dark"] .header-nav__control {
+  color: var(--color-red);
+}
+
+[data-theme="dark"] .header-nav__control:hover {
+  color: var(--color-blue);
+}
+
+/* Legacy dark mode support */
+body.dark-mode .header-nav {
+  background-color: color-mix(in srgb, var(--color-gray3) 15%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-gray8) 4%, transparent),
+    inset 1.8px 3px 0px -2px
+      color-mix(in srgb, var(--color-gray8) 12%, transparent),
+    inset -2px -2px 0px -2px
+      color-mix(in srgb, var(--color-gray8) 10%, transparent),
+    inset -3px -8px 1px -6px
+      color-mix(in srgb, var(--color-gray8) 8%, transparent),
+    inset -0.3px -1px 4px 0px
+      color-mix(in srgb, #000 calc(1 * 25%), transparent),
+    inset -1.5px 2.5px 0px -2px
+      color-mix(in srgb, #000 calc(1 * 30%), transparent),
+    inset 0px 3px 4px -2px color-mix(in srgb, #000 calc(1 * 30%), transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000 calc(1 * 25%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 12%), transparent);
+}
+
+body.dark-mode .header-nav__menu::after {
+  background-color: color-mix(in srgb, var(--color-blue) 90%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #01eeff 20%, transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, #01eeff 90%, transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, #01eeff 80%, transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, #01eeff 60%, transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, #001130 25%, transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, #000820 15%, transparent),
+    inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
+}
+
+body.dark-mode {
+  background-color: var(--color-gray1);
+}
+
+.dark-mode .header-nav {
+  background-color: color-mix(in srgb, var(--color-gray4) 20%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #000 calc(1 * 10%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 20%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent);
+}
+
+.dark-mode .header-nav__item {
+  color: var(--color-gray8);
+}
+
+.dark-mode .header-nav__item:has(input:checked) {
+  color: var(--color-gray1);
+}
+
+.dark-mode .header-nav__control {
+  color: var(--color-gray8);
+}
+
+.dark-mode .header-nav__control:hover {
+  color: var(--color-blue);
+}
+
+/* Theme toggle specific styles */
+#dark-mode-toggle {
+  font-size: 1.3rem;
+  margin-left: 0.1rem;
+}
