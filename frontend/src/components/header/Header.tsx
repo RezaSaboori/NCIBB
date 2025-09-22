@@ -8,8 +8,6 @@ import { HomeButton } from "./components/HomeButton"
 import { ProfileButton } from "./components/ProfileButton"
 import { ThemeToggle } from "./components/ThemeToggle"
 import { Navigation } from "./components/Navigation"
-import { LoginModal } from "./components/LoginModal"
-import { useState } from "react"
 import "./styles/header.css"
 
 const navigationItems: NavigationItem[] = [
@@ -22,13 +20,8 @@ const navigationItems: NavigationItem[] = [
 
 export const Header = ({ className }: HeaderProps) => {
   const { theme, toggleTheme } = useTheme()
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useActiveIndicator()
-
-  const handleProfileClick = () => {
-    setIsModalOpen(true)
-  }
 
   return (
     <div className={`header-container ${className || ""}`}>
@@ -39,15 +32,12 @@ export const Header = ({ className }: HeaderProps) => {
       <ProfileButton
         ariaLabel="Profile"
         title="User Profile"
-        onClick={handleProfileClick}
       />
 
       <ThemeToggle
         isToggled={theme === "dark"}
         onToggle={() => toggleTheme()}
       />
-
-      <LoginModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
     </div>
   )
 }
