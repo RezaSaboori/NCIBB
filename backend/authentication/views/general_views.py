@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
-from .models import User, UserProfile
-from .permissions import CanManageUsers
-from .serializers import (
+from ..models import User, UserProfile
+from ..permissions import CanManageUsers
+from ..serializers import (
     UserRegistrationSerializer, 
     UserProfileSerializer,
     CustomTokenObtainPairSerializer,

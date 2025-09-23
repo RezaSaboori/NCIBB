@@ -1,11 +1,17 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
-from . import views
+from .views import profile_views
+from .views import general_views as views
 
 app_name = 'authentication'
 
+router = DefaultRouter()
+router.register(r'profile', profile_views.UserProfileViewSet, basename='userprofile')
+router.register(r'privacy', profile_views.PrivacySettingsViewSet, basename='privacy')
+
 urlpatterns = [
-    # Test endpoint
+    # Your existing URLs
     path('test/', views.test_api, name='test_api'),
     
     # Authentication endpoints
@@ -17,8 +23,10 @@ urlpatterns = [
     
     # User endpoints
     path('dashboard/', views.UserDashboardView.as_view(), name='dashboard'),
-    path('profile/', views.UserProfileView.as_view(), name='profile'),
     path('stats/', views.user_stats_view, name='user_stats'),
     path('users/', views.UserListView.as_view(), name='user_list'),
     path('users/<int:pk>/', views.UserDetailView.as_view(), name='user_detail'),
+    
+    # Add profile-specific endpoints
+    path('', include(router.urls)),
 ]

@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@heroui/react": "^2.8.4",
+    "@hookform/resolvers": "^5.2.2",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^11.18.2",
+    "react-hook-form": "^7.63.0",
+    "react-image-crop": "^11.0.10",
+    "yup": "^1.7.1"
+  }
+}

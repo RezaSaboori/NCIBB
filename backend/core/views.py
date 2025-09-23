@@ -1,9 +1,26 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
+from .models import Page
+from .serializers import PageSerializer
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def page_data(request, page_name):
+    """
+    Retrieve data for a specific page.
+    """
+    try:
+        page = Page.objects.get(slug=page_name, is_published=True)
+        serializer = PageSerializer(page)
+        return Response(serializer.data)
+    except Page.DoesNotExist:
+        return Response({"error": "Page not found"}, status=404)
+
 
 User = get_user_model()
 

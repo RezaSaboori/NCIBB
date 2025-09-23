@@ -209,3 +209,23 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'profile_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/profile.log',
+        },
+    },
+    'loggers': {
+        'authentication.views.profile_views': {
+            'handlers': ['profile_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

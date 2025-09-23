@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
-from .models import User, UserProfile
+from .models import User, UserProfile, ProfilePrivacySettings, UserPreferences
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -32,13 +32,46 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    """Comprehensive profile serializer with computed fields"""
+    profile_picture_url = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
+    initials = serializers.SerializerMethodField()
+    
     class Meta:
         model = UserProfile
-        fields = (
-            'bio', 'organization', 'website', 'location', 'birth_date',
-            'created_at', 'updated_at'
-        )
-        read_only_fields = ('created_at', 'updated_at')
+        fields = '__all__'
+        read_only_fields = ['user', 'profile_completion_percentage', 'is_profile_complete', 'created_at', 'updated_at']
+    
+    def get_profile_picture_url(self, obj):
+        if obj.profile_picture:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.profile_picture.url)
+        return None
+    
+    def get_full_name(self, obj):
+        if obj.first_name and obj.last_name:
+            return f"{obj.first_name} {obj.last_name}"
+        return obj.display_name or obj.user.username
+    
+    def get_initials(self, obj):
+        if obj.first_name and obj.last_name:
+            return f"{obj.first_name[0]}{obj.last_name[0]}".upper()
+        name = obj.display_name or obj.user.username
+        return name[:2].upper() if name else 'UN'
+    
+    def validate_bio(self, value):
+        if len(value) > 2000:
+            raise serializers.ValidationError("Bio must be less than 2000 characters")
+        return value
+    
+    def validate_profile_picture(self, value):
+        if value:
+            if value.size > 5 * 1024 * 1024:  # 5MB limit
+                raise serializers.ValidationError("Profile picture must be less than 5MB")
+            if not value.content_type.startswith('image/'):
+                raise serializers.ValidationError("File must be an image")
+        return value
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,10 +82,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'username', 'email', 'first_name', 'last_name',
-            'role', 'phone', 'avatar', 'is_verified', 'is_active',
+            'role', 'phone', 'avatar', 'is_email_verified', 'is_active',
             'created_at', 'updated_at', 'profile', 'get_full_name'
         )
-        read_only_fields = ('id', 'created_at', 'updated_at', 'is_verified')
+        read_only_fields = ('id', 'created_at', 'updated_at', 'is_email_verified')
 
 
 class CustomTokenObtainPairSerializer(serializers.Serializer):
@@ -95,7 +128,7 @@ class UserDashboardSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'username', 'email', 'first_name', 'last_name',
-            'role', 'phone', 'avatar', 'is_verified', 'is_active',
+            'role', 'phone', 'avatar', 'is_email_verified', 'is_active',
             'created_at', 'updated_at', 'profile', 'get_full_name',
             'credits', 'projects', 'recent_messages'
         )
@@ -146,3 +179,29 @@ class UserDashboardSerializer(serializers.ModelSerializer):
             ]
         except:
             return []
+
+
+class PrivacySettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfilePrivacySettings
+        exclude = ['user', 'created_at', 'updated_at']
+
+class UserPreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPreferences
+        exclude = ['user', 'created_at', 'updated_at']
+
+class CompleteUserProfileSerializer(serializers.ModelSerializer):
+    """Complete user data with nested profile information"""
+    profile = UserProfileSerializer(read_only=True)
+    privacy_settings = PrivacySettingsSerializer(read_only=True)
+    preferences = UserPreferencesSerializer(read_only=True)
+    
+    class Meta:
+        model = User
+        fields = [
+            'id', 'username', 'email', 'phone', 'is_email_verified',
+            'is_phone_verified', 'two_factor_enabled', 'last_activity',
+            'profile_completion_score', 'profile', 'privacy_settings', 'preferences'
+        ]
+        read_only_fields = ['id', 'is_email_verified', 'is_phone_verified', 'last_activity']
