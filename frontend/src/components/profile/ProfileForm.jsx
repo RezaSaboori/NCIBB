@@ -16,7 +16,7 @@ import {
   Divider,
   Progress,
   Chip,
-  User,
+  // User, // removed
   Modal,
   ModalContent,
   ModalHeader,
@@ -50,15 +50,6 @@ const profileSchema = yup.object({
   company: yup
     .string()
     .max(200, "Company name must be less than 200 characters"),
-  website: yup.string().url("Please enter a valid URL"),
-  linkedin_url: yup
-    .string()
-    .url("Please enter a valid LinkedIn URL")
-    .matches(/linkedin\\.com/, "Must be a LinkedIn URL"),
-  github_url: yup
-    .string()
-    .url("Please enter a valid GitHub URL")
-    .matches(/github\\.com/, "Must be a GitHub URL"),
 })
 
 const genderOptions = [
@@ -99,9 +90,6 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
       job_title: profileData?.profile?.job_title || "",
       company: profileData?.profile?.company || "",
       department: profileData?.profile?.department || "",
-      website: profileData?.profile?.website || "",
-      linkedin_url: profileData?.profile?.linkedin_url || "",
-      github_url: profileData?.profile?.github_url || "",
       city: profileData?.profile?.city || "",
       state_province: profileData?.profile?.state_province || "",
       country: profileData?.profile?.country || "",
@@ -125,9 +113,6 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
         job_title: profileData.profile.job_title || "",
         company: profileData.profile.company || "",
         department: profileData.profile.department || "",
-        website: profileData.profile.website || "",
-        linkedin_url: profileData.profile.linkedin_url || "",
-        github_url: profileData.profile.github_url || "",
         city: profileData.profile.city || "",
         state_province: profileData.profile.state_province || "",
         country: profileData.profile.country || "",
@@ -235,20 +220,14 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
               </div>
 
               <div className="text-center">
-                <User
-                  name={profile?.full_name || "Unknown User"}
-                  description={
-                    profile?.job_title
-                      ? `${profile.job_title}${profile.company ? ` at ${profile.company}` : ""}`
-                      : "No job title set"
-                  }
-                  classNames={{
-                    base: "justify-center",
-                    wrapper: "flex flex-col items-center",
-                    name: "text-lg font-semibold",
-                    description: "text-small text-default-500",
-                  }}
-                />
+                <h3 className="text-lg font-semibold">
+                  {profile?.full_name || "Unknown User"}
+                </h3>
+                <p className="text-small text-default-500">
+                  {profile?.job_title
+                    ? `${profile.job_title}${profile.company ? ` at ${profile.company}` : ""}`
+                    : "No job title set"}
+                </p>
               </div>
 
               {profile?.profile_picture_url && (
@@ -515,56 +494,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                   </div>
                 </div>
 
-                {/* Social Links */}
-                <div>
-                  <h4 className="text-lg font-medium mb-4">Social Links</h4>
-                  <div className="space-y-4">
-                    <Controller
-                      name="website"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="Website"
-                          placeholder="https://yourwebsite.com"
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.website}
-                          errorMessage={errors.website?.message}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="linkedin_url"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="LinkedIn"
-                          placeholder="https://linkedin.com/in/yourprofile"
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.linkedin_url}
-                          errorMessage={errors.linkedin_url?.message}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="github_url"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="GitHub"
-                          placeholder="https://github.com/yourusername"
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.github_url}
-                          errorMessage={errors.github_url?.message}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
+                {/* Social Links - removed */}
               </form>
             </CardBody>
           </Card>

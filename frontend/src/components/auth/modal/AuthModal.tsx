@@ -30,7 +30,7 @@ export const AuthModal = ({ isOpen, onOpenChange }: AuthModalProps) => {
                 <Tab key="login" title="Login">
                   <Card>
                     <CardBody>
-                      <LoginForm />
+                      <LoginForm onLoginSuccess={onClose} />
                     </CardBody>
                   </Card>
                 </Tab>
@@ -49,4 +49,3 @@ export const AuthModal = ({ isOpen, onOpenChange }: AuthModalProps) => {
     </Modal>
   )
 }
-

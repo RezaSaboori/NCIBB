@@ -28,7 +28,7 @@ class ProfileService {
   async uploadProfilePicture(formData) {
     try {
       const response = await api.post(
-        "/auth/profile/upload_picture/",
+        "/auth/profile/me/upload-picture/",
         formData,
         {
           headers: {
@@ -46,7 +46,7 @@ class ProfileService {
   // Remove profile picture
   async removeProfilePicture() {
     try {
-      const response = await api.delete("/auth/profile/remove_picture/")
+      const response = await api.delete("/auth/profile/me/remove-picture/")
       return response.data
     } catch (error) {
       console.error("Error removing profile picture:", error)

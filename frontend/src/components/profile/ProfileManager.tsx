@@ -1,5 +1,4 @@
-// frontend/src/components/profile/ProfileManager.jsx
-import React, { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import {
   Card,
   CardBody,
@@ -10,24 +9,30 @@ import {
   Button,
 } from "@heroui/react"
 import { useSelector, useDispatch } from "react-redux"
-import { profileService } from "../../services/profileService"
-import { logoutSuccess } from "../../store/authSlice" // Import logout action
 import { authService } from "../../services/authService"
+import { logoutSuccess } from "../../store/authSlice"
+import { fetchUserProfile, updateUserProfile } from "../../store/profileSlice"
+import { AppDispatch } from "../../store/store"
 import { useNavigate } from "react-router-dom"
-import ProfileForm from "./ProfileForm"
-import SecuritySettings from "./SecuritySettings"
-import PreferencesSettings from "./PreferencesSettings"
-import ActivityLog from "./ActivityLog"
+// @ts-expect-error no types for jsx module
+import ProfileForm from "./ProfileForm.jsx"
+// @ts-expect-error no types for jsx module
+import SecuritySettings from "./SecuritySettings.jsx"
+// @ts-expect-error no types for jsx module
+import ActivityLog from "./ActivityLog.jsx"
 
 const ProfileManager = () => {
   const [activeTab, setActiveTab] = useState("profile")
-  const { user, isAuthenticated } = useSelector((state) => state.auth)
-  const [profileData, setProfileData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [saving, setSaving] = useState(false)
-  const dispatch = useDispatch()
+  const { isAuthenticated } = useSelector((state: any) => state.auth)
+  const { profile, loading, error } = useSelector((state: any) => state.profile)
+  const dispatch: AppDispatch = useDispatch()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchUserProfile())
+    }
+  }, [dispatch, isAuthenticated])
 
   const handleLogout = async () => {
     try {
@@ -36,51 +41,18 @@ const ProfileManager = () => {
       navigate("/login")
     } catch (error) {
       console.error("Logout failed:", error)
-      // Optionally, show an error message to the user
     }
   }
 
-  const loadProfile = useCallback(async () => {
-    if (!isAuthenticated) {
-      setLoading(false)
-      setError("You are not logged in.")
-      return
-    }
+  const handleProfileUpdate = async (updatedData: any) => {
     try {
-      setLoading(true)
-      const data = await profileService.getCurrentProfile()
-      setProfileData(data)
-      setError(null)
-    } catch (err) {
-      setError("Failed to load profile data")
-      console.error("Profile load error:", err)
-      if (err.response && err.response.status === 401) {
-        dispatch(logoutSuccess()) // Dispatch logout if unauthorized
-      }
-    } finally {
-      setLoading(false)
-    }
-  }, [isAuthenticated, dispatch])
-
-  useEffect(() => {
-    loadProfile()
-  }, [loadProfile])
-
-  const handleProfileUpdate = async (updatedData) => {
-    try {
-      setSaving(true)
-      const response = await profileService.updateProfile(updatedData)
-      setProfileData((prev) => ({ ...prev, profile: response }))
-      // You might want to refresh the user data in Redux state here
-      return response
+      const result = await dispatch(updateUserProfile(updatedData)).unwrap()
+      return result
     } catch (error) {
+      console.error("Failed to update profile:", error)
       throw error
-    } finally {
-      setSaving(false)
     }
   }
-
-  // Privacy settings have been removed from the application
 
   if (loading) {
     return (
@@ -96,7 +68,7 @@ const ProfileManager = () => {
         <Alert
           color="danger"
           title="Access Denied"
-          description={error || "Please log in to view your profile."}
+          description={error?.detail || "Please log in to view your profile."}
           endContent={
             !isAuthenticated && (
               <Button as="a" href="/login" size="sm" variant="flat">
@@ -109,7 +81,7 @@ const ProfileManager = () => {
     )
   }
 
-  if (!profileData) {
+  if (!profile) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <p>No profile data found.</p>
@@ -123,40 +95,28 @@ const ProfileManager = () => {
       label: "Profile",
       content: (
         <ProfileForm
-          profileData={profileData}
+          profileData={profile}
           onUpdate={handleProfileUpdate}
-          saving={saving}
-          onRefresh={loadProfile}
+          saving={loading}
+          onRefresh={() => dispatch(fetchUserProfile())}
         />
       ),
     },
-    // Privacy tab removed
     {
       id: "security",
       label: "Security",
       content: (
         <SecuritySettings
-          userData={{ ...user, ...profileData }} // Combine Redux user with profile data
+          userData={profile}
           onUpdate={handleProfileUpdate}
-          saving={saving}
-        />
-      ),
-    },
-    {
-      id: "preferences",
-      label: "Preferences",
-      content: (
-        <PreferencesSettings
-          preferencesData={profileData?.preferences}
-          onUpdate={handleProfileUpdate}
-          saving={saving}
+          saving={loading}
         />
       ),
     },
     {
       id: "activity",
       label: "Activity",
-      content: <ActivityLog userId={user?.id} />,
+      content: <ActivityLog userId={profile?.id} />,
     },
   ]
 
@@ -168,7 +128,7 @@ const ProfileManager = () => {
             Profile Settings
           </h1>
           <p className="text-default-500 mt-2">
-            Manage your account information and preferences
+            Manage your account information and security
           </p>
         </div>
         <Button color="danger" variant="flat" onClick={handleLogout}>
@@ -180,7 +140,7 @@ const ProfileManager = () => {
         <CardBody className="p-0">
           <Tabs
             selectedKey={activeTab}
-            onSelectionChange={setActiveTab}
+            onSelectionChange={(key) => setActiveTab(String(key))}
             variant="underlined"
             classNames={{
               tabList:

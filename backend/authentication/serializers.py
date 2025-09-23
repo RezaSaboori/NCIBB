@@ -17,6 +17,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
             'password_confirm': {'write_only': True},
+            'phone': {'required': False},
+            'role': {'required': False},
         }
     
     def validate(self, attrs):
@@ -26,6 +28,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data.pop('password_confirm')
+        # Set default role if not provided
+        validated_data.setdefault('role', 'user')
         password = validated_data.pop('password')
         user = User.objects.create_user(password=password, **validated_data)
         return user

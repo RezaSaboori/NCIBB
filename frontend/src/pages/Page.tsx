@@ -4,7 +4,9 @@ import { Hero } from "../components/marketing/Hero"
 import { FeatureGrid } from "../components/marketing/FeatureGrid"
 import { CallToAction } from "../components/marketing/CallToAction"
 
-const componentMap = {
+type ComponentMap = Record<string, React.ComponentType<any>>
+
+const componentMap: ComponentMap = {
   Hero: Hero,
   FeatureGrid: FeatureGrid,
   CallToAction: CallToAction,
@@ -14,8 +16,17 @@ interface PageProps {
   pageName: string
 }
 
+interface PageContentSection {
+  component: string
+  props?: Record<string, unknown>
+}
+
+interface PageContent {
+  sections: PageContentSection[]
+}
+
 const Page: React.FC<PageProps> = ({ pageName }) => {
-  const [pageData, setPageData] = useState<any>(null)
+  const [pageData, setPageData] = useState<PageContent | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -24,9 +35,9 @@ const Page: React.FC<PageProps> = ({ pageName }) => {
       try {
         setLoading(true)
         const response = await getPageData(pageName)
-        const page = response.data
+        const page = response.data as { content: unknown }
 
-        let contentData = page.content
+        let contentData: unknown = (page as any).content
         if (typeof contentData === "string") {
           try {
             contentData = JSON.parse(contentData)
@@ -37,7 +48,17 @@ const Page: React.FC<PageProps> = ({ pageName }) => {
           }
         }
 
-        setPageData(contentData)
+        // Basic shape validation
+        if (
+          contentData &&
+          typeof contentData === "object" &&
+          Array.isArray((contentData as any).sections)
+        ) {
+          setPageData(contentData as PageContent)
+        } else {
+          setError(`Invalid content structure for ${pageName} page.`)
+          return
+        }
       } catch (err) {
         setError(`Failed to load ${pageName} page data.`)
         console.error(`Error fetching ${pageName} page data:`, err)
@@ -68,9 +89,11 @@ const Page: React.FC<PageProps> = ({ pageName }) => {
 
   return (
     <div>
-      {pageData.sections.map((section: any, index: number) => {
-        const Component = componentMap[section.component]
-        return Component ? <Component key={index} {...section.props} /> : null
+      {pageData.sections.map((section, index: number) => {
+        const Component = componentMap[String(section.component)]
+        return Component ? (
+          <Component key={index} {...(section.props as any)} />
+        ) : null
       })}
     </div>
   )

@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react"
 import { useDisclosure, Avatar } from "@heroui/react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { IconButtonProps } from "../types"
 import { AuthModal } from "../../auth/modal/AuthModal"
@@ -12,6 +12,8 @@ export const ProfileButton = ({
 }: Omit<IconButtonProps, "onClick">) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { isAuthenticated, user } = useSelector((state: any) => state.auth)
+  const location = useLocation()
+  const isActive = location.pathname.startsWith("/profile")
 
   return (
     <>
@@ -20,7 +22,7 @@ export const ProfileButton = ({
         {isAuthenticated ? (
           <Link to="/profile">
             <button
-              className={`header-nav__control ${className || ""}`}
+              className={`header-nav__control ${isActive ? "header-nav__control--active" : ""} ${className || ""}`}
               aria-label={ariaLabel}
               title={title}
             >
@@ -35,17 +37,19 @@ export const ProfileButton = ({
           </Link>
         ) : (
           <button
-            className={`header-nav__control ${className || ""}`}
+            className={`header-nav__control ${isActive ? "header-nav__control--active" : ""} ${className || ""}`}
             aria-label={ariaLabel}
             title={title}
             onClick={onOpen}
           >
-            <Icon
-              icon="typcn:user"
-              className="header-nav__icon"
-              width="100%"
-              height="100%"
-            />
+            <div className="profile-icon-wrapper">
+              <Icon
+                icon="typcn:user"
+                className="header-nav__icon"
+                width="100%"
+                height="100%"
+              />
+            </div>
           </button>
         )}
       </fieldset>
