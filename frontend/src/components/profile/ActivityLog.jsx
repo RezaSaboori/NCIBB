@@ -1,7 +1,7 @@
 import React from "react"
 
 const ActivityLog = () => {
-  return <div>Activity Log Component</div>
+  return <div>گزارش فعالیت</div>
 }
 
 export default ActivityLog

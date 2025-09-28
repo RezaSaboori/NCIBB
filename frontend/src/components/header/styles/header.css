@@ -20,7 +20,10 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
   gap: var(--header-spacing);
   font-family: var(--font-family-persian);
 }
@@ -43,7 +46,7 @@
   border: none;
   border-radius: var(--header-border-radius);
   font-size: var(--header-font-size);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   font-family: var(--font-family-persian);
   background-color: color-mix(in srgb, var(--color-gray4) 12%, transparent);
   backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
@@ -149,7 +152,7 @@
   opacity: 1;
   color: var(--color-gray10);
   font-family: var(--font-family-persian);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   transition: color var(--header-motion-duration) var(--header-motion-easing);
 }
 
@@ -198,9 +201,11 @@
   left: 0;
   width: var(--active-indicator-width);
   transform: translateX(var(--active-indicator-left));
+  opacity: var(--active-indicator-opacity, 1);
   transition:
     transform var(--motion-duration-slow) var(--motion-easing-easeInOut),
-    width var(--motion-duration-slow) var(--motion-easing-easeInOut);
+    width var(--motion-duration-slow) var(--motion-easing-easeInOut),
+    opacity var(--motion-duration-normal) var(--motion-easing-easeInOut);
   display: block;
   border-radius: var(--border-radius-pill);
   background-color: color-mix(in srgb, var(--color-blue) 80%, transparent);
@@ -250,7 +255,7 @@
 }
 
 [data-theme="dark"] .header-nav__item {
-  color: var(--color-red);
+  color: var(--color-gray12);
 }
 
 [data-theme="dark"] .header-nav__item:has(input:checked) {
@@ -258,72 +263,10 @@
 }
 
 [data-theme="dark"] .header-nav__control {
-  color: var(--color-red);
+  color: var(--color-gray12);
 }
 
 [data-theme="dark"] .header-nav__control:hover {
-  color: var(--color-blue);
-}
-
-/* Legacy dark mode support */
-body.dark-mode .header-nav {
-  background-color: color-mix(in srgb, var(--color-gray3) 15%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--color-gray8) 4%, transparent),
-    inset 1.8px 3px 0px -2px
-      color-mix(in srgb, var(--color-gray8) 12%, transparent),
-    inset -2px -2px 0px -2px
-      color-mix(in srgb, var(--color-gray8) 10%, transparent),
-    inset -3px -8px 1px -6px
-      color-mix(in srgb, var(--color-gray8) 8%, transparent),
-    inset -0.3px -1px 4px 0px
-      color-mix(in srgb, #000 calc(1 * 25%), transparent),
-    inset -1.5px 2.5px 0px -2px
-      color-mix(in srgb, #000 calc(1 * 30%), transparent),
-    inset 0px 3px 4px -2px color-mix(in srgb, #000 calc(1 * 30%), transparent),
-    inset 2px -6.5px 1px -4px
-      color-mix(in srgb, #000 calc(1 * 25%), transparent),
-    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent),
-    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 12%), transparent);
-}
-
-body.dark-mode .header-nav__menu::after {
-  background-color: color-mix(in srgb, var(--color-blue) 90%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, #01eeff 20%, transparent),
-    inset 2px 1px 0px -1px color-mix(in srgb, #01eeff 90%, transparent),
-    inset -1.5px -1px 0px -1px color-mix(in srgb, #01eeff 80%, transparent),
-    inset -2px -6px 1px -5px color-mix(in srgb, #01eeff 60%, transparent),
-    inset -1px 2px 3px -1px color-mix(in srgb, #001130 25%, transparent),
-    inset 0px -4px 1px -2px color-mix(in srgb, #000820 15%, transparent),
-    inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
-}
-
-body.dark-mode {
-  background-color: var(--color-gray1);
-}
-
-.dark-mode .header-nav {
-  background-color: color-mix(in srgb, var(--color-gray4) 20%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, #000 calc(1 * 10%), transparent),
-    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 20%), transparent),
-    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent);
-}
-
-.dark-mode .header-nav__item {
-  color: var(--color-gray8);
-}
-
-.dark-mode .header-nav__item:has(input:checked) {
-  color: var(--color-gray1);
-}
-
-.dark-mode .header-nav__control {
-  color: var(--color-gray8);
-}
-
-.dark-mode .header-nav__control:hover {
   color: var(--color-blue);
 }
 

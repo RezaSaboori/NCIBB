@@ -32,31 +32,27 @@ import CompletionCard from "./CompletionCard"
 const profileSchema = yup.object({
   first_name: yup
     .string()
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must be less than 50 characters")
-    .required("First name is required"),
+    .min(2, "نام باید حداقل ۲ کاراکتر باشد")
+    .max(50, "نام باید کمتر از ۵۰ کاراکتر باشد")
+    .required("نام الزامی است"),
   last_name: yup
     .string()
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must be less than 50 characters")
-    .required("Last name is required"),
+    .min(2, "نام خانوادگی باید حداقل ۲ کاراکتر باشد")
+    .max(50, "نام خانوادگی باید کمتر از ۵۰ کاراکتر باشد")
+    .required("نام خانوادگی الزامی است"),
   display_name: yup
     .string()
-    .max(100, "Display name must be less than 100 characters"),
-  bio: yup.string().max(2000, "Bio must be less than 2000 characters"),
-  job_title: yup
-    .string()
-    .max(200, "Job title must be less than 200 characters"),
-  company: yup
-    .string()
-    .max(200, "Company name must be less than 200 characters"),
+    .max(100, "نام نمایشی باید کمتر از ۱۰۰ کاراکتر باشد"),
+  bio: yup.string().max(2000, "بیوگرافی باید کمتر از ۲۰۰۰ کاراکتر باشد"),
+  job_title: yup.string().max(200, "عنوان شغلی باید کمتر از ۲۰۰ کاراکتر باشد"),
+  company: yup.string().max(200, "نام شرکت باید کمتر از ۲۰۰ کاراکتر باشد"),
 })
 
 const genderOptions = [
-  { key: "male", label: "Male" },
-  { key: "female", label: "Female" },
-  { key: "other", label: "Other" },
-  { key: "prefer_not_to_say", label: "Prefer not to say" },
+  { key: "male", label: "مرد" },
+  { key: "female", label: "زن" },
+  { key: "other", label: "دیگر" },
+  { key: "prefer_not_to_say", label: "ترجیح می دهم نگویم" },
 ]
 
 const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
@@ -134,6 +130,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
     try {
       await onUpdate(formData)
       setEditMode(false)
+      await onRefresh() // Refetch profile data
       await loadCompletionData()
     } catch (error) {
       console.error("Failed to update profile:", error)
@@ -144,7 +141,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
     const file = event.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert("File size must be less than 5MB")
+        alert("حجم فایل باید کمتر از ۵ مگابایت باشد")
         return
       }
       setImageFile(file)
@@ -179,7 +176,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
   const profile = profileData?.profile
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-right">
       {/* Completion Status */}
       {completionData && (
         <CompletionCard data={completionData} onRefresh={loadCompletionData} />
@@ -221,12 +218,12 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
 
               <div className="text-center">
                 <h3 className="text-lg font-semibold">
-                  {profile?.full_name || "Unknown User"}
+                  {profile?.full_name || "کاربر ناشناس"}
                 </h3>
                 <p className="text-small text-default-500">
                   {profile?.job_title
-                    ? `${profile.job_title}${profile.company ? ` at ${profile.company}` : ""}`
-                    : "No job title set"}
+                    ? `${profile.job_title}${profile.company ? ` در ${profile.company}` : ""}`
+                    : "عنوان شغلی ثبت نشده است"}
                 </p>
               </div>
 
@@ -240,7 +237,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                   }
                   onPress={onDeleteOpen}
                 >
-                  Remove Photo
+                  حذف عکس
                 </Button>
               )}
             </CardBody>
@@ -252,9 +249,9 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
           <Card>
             <CardHeader className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-semibold">Profile Information</h3>
+                <h3 className="text-xl font-semibold">اطلاعات پروفایل</h3>
                 <p className="text-small text-default-500">
-                  Update your personal information and preferences
+                  اطلاعات شخصی و تنظیمات خود را به روز کنید
                 </p>
               </div>
 
@@ -267,7 +264,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                   }
                   onPress={() => setEditMode(true)}
                 >
-                  Edit Profile
+                  ویرایش پروفایل
                 </Button>
               ) : (
                 <div className="flex gap-2">
@@ -280,7 +277,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                     isLoading={saving}
                     isDisabled={!isValid || !isDirty}
                   >
-                    Save Changes
+                    ذخیره تغییرات
                   </Button>
                   <Button
                     variant="flat"
@@ -289,7 +286,7 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       reset()
                     }}
                   >
-                    Cancel
+                    لغو
                   </Button>
                 </div>
               )}
@@ -301,22 +298,30 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Basic Information */}
                 <div>
-                  <h4 className="text-lg font-medium mb-4">
-                    Basic Information
+                  <h4 className="text-lg font-medium mb-4 text-right">
+                    اطلاعات پایه
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    dir="rtl"
+                  >
                     <Controller
                       name="first_name"
                       control={control}
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="First Name"
-                          placeholder="Enter your first name"
+                          label="نام"
+                          placeholder="نام خود را وارد کنید"
                           isRequired
                           isDisabled={!editMode}
                           isInvalid={!!errors.first_name}
                           errorMessage={errors.first_name?.message}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -327,12 +332,17 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="Last Name"
-                          placeholder="Enter your last name"
+                          label="نام خانوادگی"
+                          placeholder="نام خانوادگی خود را وارد کنید"
                           isRequired
                           isDisabled={!editMode}
                           isInvalid={!!errors.last_name}
                           errorMessage={errors.last_name?.message}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -343,10 +353,16 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="Display Name"
-                          placeholder="How should we address you?"
+                          label="نام نمایشی"
+                          placeholder="چگونه شما را خطاب کنیم؟"
                           isDisabled={!editMode}
-                          description="This name will be shown to other users"
+                          description="این نام به سایر کاربران نمایش داده خواهد شد"
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                            description: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -357,13 +373,19 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Select
                           {...field}
-                          label="Gender"
-                          placeholder="Select your gender"
+                          label="جنسیت"
+                          placeholder="جنسیت خود را انتخاب کنید"
                           isDisabled={!editMode}
                           selectedKeys={field.value ? [field.value] : []}
                           onSelectionChange={(keys) => {
                             const selectedValue = Array.from(keys)[0]
                             field.onChange(selectedValue || "")
+                          }}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            value: "text-right",
+                            trigger: "text-right",
                           }}
                         >
                           {genderOptions.map((option) => (
@@ -385,14 +407,20 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                     render={({ field }) => (
                       <Textarea
                         {...field}
-                        label="Biography"
-                        placeholder="Tell us about yourself..."
+                        label="بیوگرافی"
+                        placeholder="درباره خودتان به ما بگویید..."
                         minRows={3}
                         maxRows={6}
                         isDisabled={!editMode}
                         isInvalid={!!errors.bio}
                         errorMessage={errors.bio?.message}
-                        description={`${field.value?.length || 0}/2000 characters`}
+                        description={`${field.value?.length || 0}/2000 کاراکتر`}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          description: "text-right",
+                        }}
                       />
                     )}
                   />
@@ -400,21 +428,29 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
 
                 {/* Professional Information */}
                 <div>
-                  <h4 className="text-lg font-medium mb-4">
-                    Professional Information
+                  <h4 className="text-lg font-medium mb-4 text-right">
+                    اطلاعات حرفه ای
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    dir="rtl"
+                  >
                     <Controller
                       name="job_title"
                       control={control}
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="Job Title"
-                          placeholder="e.g., Software Engineer"
+                          label="عنوان شغلی"
+                          placeholder="مثلا: مهندس نرم افزار"
                           isDisabled={!editMode}
                           isInvalid={!!errors.job_title}
                           errorMessage={errors.job_title?.message}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -425,11 +461,16 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="Company"
-                          placeholder="e.g., ABC Technology"
+                          label="شرکت"
+                          placeholder="مثلا: شرکت فناوری ABC"
                           isDisabled={!editMode}
                           isInvalid={!!errors.company}
                           errorMessage={errors.company?.message}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -440,28 +481,41 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="Department"
-                          placeholder="e.g., Engineering"
+                          label="دپارتمان"
+                          placeholder="مثلا: مهندسی"
                           isDisabled={!editMode}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
                   </div>
                 </div>
 
-                {/* Location Information */}
+                {/* Location */}
                 <div>
-                  <h4 className="text-lg font-medium mb-4">Location</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h4 className="text-lg font-medium mb-4 text-right">مکان</h4>
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    dir="rtl"
+                  >
                     <Controller
                       name="city"
                       control={control}
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="City"
-                          placeholder="e.g., San Francisco"
+                          label="شهر"
+                          placeholder="مثلا: تهران"
                           isDisabled={!editMode}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -472,9 +526,14 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="State/Province"
-                          placeholder="e.g., California"
+                          label="استان"
+                          placeholder="مثلا: تهران"
                           isDisabled={!editMode}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
@@ -485,48 +544,71 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          label="Country"
-                          placeholder="e.g., United States"
+                          label="کشور"
+                          placeholder="مثلا: ایران"
                           isDisabled={!editMode}
+                          labelPlacement="outside"
+                          classNames={{
+                            label: "text-right",
+                            input: "text-right",
+                          }}
                         />
                       )}
                     />
                   </div>
                 </div>
-
-                {/* Social Links - removed */}
               </form>
             </CardBody>
           </Card>
         </div>
       </div>
 
-      {/* Image Crop Modal */}
-      <ImageCropModal
-        isOpen={isCropOpen}
-        onClose={onCropClose}
-        image={imageFile}
-        onSave={handleImageUpload}
-      />
-
-      {/* Delete Confirmation Modal */}
-      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+      <Modal isOpen={isCropOpen} onOpenChange={onCropClose}>
         <ModalContent>
-          <ModalHeader>Delete Profile Picture</ModalHeader>
-          <ModalBody>
-            <p>
-              Are you sure you want to remove your profile picture? This action
-              cannot be undone.
-            </p>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="flat" onPress={onDeleteClose}>
-              Cancel
-            </Button>
-            <Button color="danger" onPress={handleImageDelete}>
-              Delete
-            </Button>
-          </ModalFooter>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                تصویر پروفایل
+              </ModalHeader>
+              <ModalBody>
+                <ImageCropModal
+                  imageFile={imageFile}
+                  onCropComplete={handleImageUpload}
+                  onClose={onClose}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onClose}>
+                  لغو
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isDeleteOpen} onOpenChange={onDeleteClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                حذف عکس پروفایل
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  آیا از حذف عکس پروفایل اطمینان دارید؟ این عمل برگشت پذیر نیست.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" onPress={handleImageDelete}>
+                  حذف
+                </Button>
+                <Button color="primary" variant="flat" onPress={onClose}>
+                  لغو
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     </div>

@@ -24,18 +24,18 @@ type ServerErrorValue = string | string[] | null | undefined
 type ServerError = Record<string, ServerErrorValue> | string
 
 const registerSchema = yup.object().shape({
-  username: yup.string().required("Username is required"),
-  first_name: yup.string().required("First name is required"),
-  last_name: yup.string().required("Last name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
+  username: yup.string().required("نام کاربری الزامی است"),
+  first_name: yup.string().required("نام الزامی است"),
+  last_name: yup.string().required("نام خانوادگی الزامی است"),
+  email: yup.string().email("ایمیل نامعتبر است").required("ایمیل الزامی است"),
   password: yup
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Password is required"),
+    .min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد")
+    .required("رمز عبور الزامی است"),
   password_confirm: yup
     .string()
-    .oneOf([yup.ref("password")], "Passwords must match")
-    .required("Password confirmation is required"),
+    .oneOf([yup.ref("password")], "رمزهای عبور باید مطابقت داشته باشند")
+    .required("تایید رمز عبور الزامی است"),
 })
 
 const RegisterForm = () => {
@@ -71,7 +71,7 @@ const RegisterForm = () => {
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
           role="alert"
         >
-          <strong className="font-bold">Error:</strong>
+          <strong className="font-bold">خطا:</strong>
           <span className="block sm:inline ml-2">
             {typeof serverError === "string" ? (
               <span>{serverError}</span>
@@ -94,14 +94,19 @@ const RegisterForm = () => {
           <Input
             {...field}
             isRequired
-            label="Username"
-            placeholder="Enter your username"
+            label="نام کاربری"
+            placeholder="نام کاربری خود را وارد کنید"
             isInvalid={!!errors.username}
             errorMessage={errors.username?.message}
+            labelPlacement="outside"
+            classNames={{
+              label: "text-right",
+              input: "text-right",
+            }}
           />
         )}
       />
-      <div className="flex gap-4">
+      <div className="flex gap-4" dir="rtl">
         <Controller
           name="first_name"
           control={control}
@@ -110,10 +115,15 @@ const RegisterForm = () => {
             <Input
               {...field}
               isRequired
-              label="First Name"
-              placeholder="Enter your first name"
+              label="نام"
+              placeholder="نام خود را وارد کنید"
               isInvalid={!!errors.first_name}
               errorMessage={errors.first_name?.message}
+              labelPlacement="outside"
+              classNames={{
+                label: "text-right",
+                input: "text-right",
+              }}
             />
           )}
         />
@@ -125,10 +135,15 @@ const RegisterForm = () => {
             <Input
               {...field}
               isRequired
-              label="Last Name"
-              placeholder="Enter your last name"
+              label="نام خانوادگی"
+              placeholder="نام خانوادگی خود را وارد کنید"
               isInvalid={!!errors.last_name}
               errorMessage={errors.last_name?.message}
+              labelPlacement="outside"
+              classNames={{
+                label: "text-right",
+                input: "text-right",
+              }}
             />
           )}
         />
@@ -141,11 +156,16 @@ const RegisterForm = () => {
           <Input
             {...field}
             isRequired
-            label="Email"
-            placeholder="Enter your email"
+            label="ایمیل"
+            placeholder="ایمیل خود را وارد کنید"
             type="email"
             isInvalid={!!errors.email}
             errorMessage={errors.email?.message}
+            labelPlacement="outside"
+            classNames={{
+              label: "text-right",
+              input: "text-right",
+            }}
           />
         )}
       />
@@ -157,11 +177,16 @@ const RegisterForm = () => {
           <Input
             {...field}
             isRequired
-            label="Password"
-            placeholder="Enter your password"
+            label="رمز عبور"
+            placeholder="رمز عبور خود را وارد کنید"
             type="password"
             isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
+            labelPlacement="outside"
+            classNames={{
+              label: "text-right",
+              input: "text-right",
+            }}
           />
         )}
       />
@@ -173,20 +198,25 @@ const RegisterForm = () => {
           <Input
             {...field}
             isRequired
-            label="Confirm Password"
-            placeholder="Confirm your password"
+            label="تایید رمز عبور"
+            placeholder="رمز عبور خود را تایید کنید"
             type="password"
             isInvalid={!!errors.password_confirm}
             errorMessage={errors.password_confirm?.message}
+            labelPlacement="outside"
+            classNames={{
+              label: "text-right",
+              input: "text-right",
+            }}
           />
         )}
       />
       <Button color="primary" type="submit">
-        Sign Up
+        ثبت نام
       </Button>
       <div className="flex items-center gap-4">
         <hr className="w-full" />
-        <span>Or</span>
+        <span>یا</span>
         <hr className="w-full" />
       </div>
       <SocialButtons />

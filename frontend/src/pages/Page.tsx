@@ -72,7 +72,9 @@ const Page: React.FC<PageProps> = ({ pageName }) => {
 
   if (loading)
     return (
-      <div className="container mx-auto px-6 py-20 text-center">Loading...</div>
+      <div className="container mx-auto px-6 py-20 text-center">
+        در حال بارگذاری...
+      </div>
     )
   if (error)
     return (
@@ -83,7 +85,7 @@ const Page: React.FC<PageProps> = ({ pageName }) => {
   if (!pageData || !pageData.sections)
     return (
       <div className="container mx-auto px-6 py-20 text-center">
-        Page content not found.
+        محتوای صفحه یافت نشد.
       </div>
     )
 

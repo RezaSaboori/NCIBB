@@ -1,7 +1,7 @@
 import React from "react"
 
 const PreferencesSettings = () => {
-  return <div>Preferences Settings Component</div>
+  return <div>تنظیمات ترجیحات</div>
 }
 
 export default PreferencesSettings

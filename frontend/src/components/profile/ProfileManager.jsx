@@ -165,14 +165,14 @@ const ProfileManager = () => {
       <div className="mb-8 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-default-900">
-            Profile Settings
+            تنظیمات پروفایل
           </h1>
           <p className="text-default-500 mt-2">
-            Manage your account information and preferences
+            اطلاعات حساب کاربری و تنظیمات خود را مدیریت کنید
           </p>
         </div>
         <Button color="danger" variant="flat" onClick={handleLogout}>
-          Sign Out
+          خروج
         </Button>
       </div>
 

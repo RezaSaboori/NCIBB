@@ -40,11 +40,10 @@ export const ThemeContextProvider = ({
     const root = document.documentElement
     root.setAttribute("data-theme", theme)
 
-    // Apply theme to body for legacy support
     if (theme === "dark") {
-      document.body.classList.add("dark-mode")
+      root.classList.add("dark")
     } else {
-      document.body.classList.remove("dark-mode")
+      root.classList.remove("dark")
     }
   }, [theme])
 

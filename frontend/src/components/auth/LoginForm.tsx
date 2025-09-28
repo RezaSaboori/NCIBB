@@ -20,8 +20,8 @@ type LoginFormProps = {
 }
 
 const loginSchema = yup.object().shape({
-  email: yup.string().email("Invalid email").required("Email is required"),
-  password: yup.string().required("Password is required"),
+  email: yup.string().email("ایمیل نامعتبر است").required("ایمیل الزامی است"),
+  password: yup.string().required("رمز عبور الزامی است"),
 })
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
@@ -67,11 +67,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
             <Input
               {...field}
               isRequired
-              label="Email"
-              placeholder="Enter your email"
+              label="ایمیل"
+              placeholder="ایمیل خود را وارد کنید"
               type="email"
               isInvalid={!!errors.email}
               errorMessage={errors.email?.message}
+              labelPlacement="outside"
+              classNames={{
+                label: "text-right",
+                input: "text-right",
+              }}
             />
           )}
         />
@@ -83,11 +88,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
             <Input
               {...field}
               isRequired
-              label="Password"
-              placeholder="Enter your password"
+              label="رمز عبور"
+              placeholder="رمز عبور خود را وارد کنید"
               type="password"
               isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
+              labelPlacement="outside"
+              classNames={{
+                label: "text-right",
+                input: "text-right",
+              }}
             />
           )}
         />
@@ -100,15 +110,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
               onForgotPasswordOpen()
             }}
           >
-            Forgot password?
+            رمز عبور خود را فراموش کرده اید؟
           </Link>
         </div>
         <Button color="primary" type="submit">
-          Sign In
+          ورود
         </Button>
         <div className="flex items-center gap-4">
           <hr className="w-full" />
-          <span>Or</span>
+          <span>یا</span>
           <hr className="w-full" />
         </div>
         <SocialButtons />

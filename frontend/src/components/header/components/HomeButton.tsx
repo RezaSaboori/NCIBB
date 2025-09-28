@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react"
+import { Link, useLocation } from "react-router-dom"
 import { IconButtonProps } from "../types"
 
 export const HomeButton = ({
@@ -9,20 +10,22 @@ export const HomeButton = ({
   return (
     <fieldset className="header-nav header-nav--icon">
       <legend className="header-nav__legend">Home</legend>
-      <button
-        className={`header-nav__control ${className || ""}`}
-        aria-label={ariaLabel}
-        title={title}
-      >
-        <div className="home-icon-wrapper">
-          <Icon
-            icon="material-symbols-light:home-rounded"
-            className="header-nav__icon"
-            width="100%"
-            height="100%"
-          />
-        </div>
-      </button>
+      <Link to="/">
+        <button
+          className={`header-nav__control ${className || ""}`}
+          aria-label={ariaLabel}
+          title={title}
+        >
+          <div className="home-icon-wrapper">
+            <Icon
+              icon="material-symbols-light:home-rounded"
+              className="header-nav__icon"
+              width="100%"
+              height="100%"
+            />
+          </div>
+        </button>
+      </Link>
     </fieldset>
   )
 }

@@ -28,20 +28,29 @@ const CompletionCard = ({ data, onRefresh }) => {
   }
 
   const getProgressLabel = (percentage) => {
-    if (percentage >= 80) return "Great Profile!"
-    if (percentage >= 60) return "Good Progress"
-    return "Needs Attention"
+    if (percentage >= 80) return "پروفایل عالی!"
+    if (percentage >= 60) return "پیشرفت خوب"
+    return "نیازمند توجه"
+  }
+
+  const fieldLabels = {
+    Biography: "بیوگرافی",
+    "Job Title": "عنوان شغلی",
+    Company: "شرکت",
+    City: "شهر",
+    Country: "کشور",
+    "Profile Picture": "عکس پروفایل",
   }
 
   return (
-    <Card className="border-2 border-dashed border-primary-200 bg-primary-50/50">
+    <Card className="border-2 border-dashed border-primary-200 bg-primary-50/50 text-right">
       <CardHeader className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold text-primary-900">
-            Profile Completion
+            تکمیل پروفایل
           </h3>
           <p className="text-sm text-primary-700">
-            Complete your profile to unlock all features
+            برای باز کردن تمام امکانات، پروفایل خود را کامل کنید
           </p>
         </div>
         <Chip
@@ -61,10 +70,10 @@ const CompletionCard = ({ data, onRefresh }) => {
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium">
-              {completion_percentage}% Complete
+              {completion_percentage}% تکمیل شده
             </span>
             <span className="text-xs text-default-500">
-              {8 - missing_fields.length} of 8 fields completed
+              {8 - missing_fields.length} از 8 فیلد تکمیل شده است
             </span>
           </div>
           <Progress
@@ -84,7 +93,7 @@ const CompletionCard = ({ data, onRefresh }) => {
                 key={index}
                 color={rec.type === "urgent" ? "warning" : "primary"}
                 variant="flat"
-                title={rec.title || rec.message}
+                title="پروفایل نیازمند توجه است"
                 description={rec.action}
                 startContent={
                   rec.type === "urgent" ? (
@@ -106,9 +115,9 @@ const CompletionCard = ({ data, onRefresh }) => {
 
         {/* Missing Fields */}
         {missing_fields && missing_fields.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium mb-2">Missing Information:</h4>
-            <div className="flex flex-wrap gap-2">
+          <div className="text-right">
+            <h4 className="text-sm font-medium mb-2">اطلاعات ناقص:</h4>
+            <div className="flex flex-wrap gap-2 justify-end">
               {missing_fields.map((field) => (
                 <Chip
                   key={field.field}
@@ -116,7 +125,7 @@ const CompletionCard = ({ data, onRefresh }) => {
                   color={field.priority === "high" ? "warning" : "default"}
                   variant="flat"
                 >
-                  {field.label}
+                  {fieldLabels[field.label] || field.label}
                 </Chip>
               ))}
             </div>
@@ -127,7 +136,7 @@ const CompletionCard = ({ data, onRefresh }) => {
           <div className="flex items-center gap-2 text-success-600">
             <Icon icon="heroicons:check-circle" className="w-5 h-5" />
             <span className="text-sm font-medium">
-              Your profile is complete! 🎉
+              پروفایل شما کامل است! 🎉
             </span>
           </div>
         )}

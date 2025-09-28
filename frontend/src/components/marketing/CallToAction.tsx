@@ -20,15 +20,15 @@ export const CallToAction: React.FC<CallToActionProps> = ({
     <div className="py-20">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-4xl font-bold text-gray-800 dark:text-white">
-          {title}
+          آماده شروع هستید؟
         </h2>
         <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
-          {description}
+          امروز به ما بپیوندید و تفاوتی که ما ایجاد می کنیم را تجربه کنید.
         </p>
         <div className="mt-8">
           <Link to={action.link}>
             <Button color="primary" size="lg">
-              {action.text}
+              ثبت نام کنید
             </Button>
           </Link>
         </div>

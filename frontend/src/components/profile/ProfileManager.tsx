@@ -57,7 +57,7 @@ const ProfileManager = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <Spinner size="lg" label="Loading profile..." />
+        <Spinner size="lg" label="در حال بارگذاری پروفایل..." />
       </div>
     )
   }
@@ -67,12 +67,14 @@ const ProfileManager = () => {
       <div className="max-w-4xl mx-auto p-6">
         <Alert
           color="danger"
-          title="Access Denied"
-          description={error?.detail || "Please log in to view your profile."}
+          title="دسترسی غیرمجاز"
+          description={
+            error?.detail || "لطفا برای مشاهده پروفایل خود وارد شوید."
+          }
           endContent={
             !isAuthenticated && (
               <Button as="a" href="/login" size="sm" variant="flat">
-                Go to Login
+                برو به صفحه ورود
               </Button>
             )
           }
@@ -84,7 +86,7 @@ const ProfileManager = () => {
   if (!profile) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <p>No profile data found.</p>
+        <p>اطلاعات پروفایلی یافت نشد.</p>
       </div>
     )
   }
@@ -92,7 +94,7 @@ const ProfileManager = () => {
   const tabs = [
     {
       id: "profile",
-      label: "Profile",
+      label: "پروفایل",
       content: (
         <ProfileForm
           profileData={profile}
@@ -104,7 +106,7 @@ const ProfileManager = () => {
     },
     {
       id: "security",
-      label: "Security",
+      label: "امنیت",
       content: (
         <SecuritySettings
           userData={profile}
@@ -114,25 +116,30 @@ const ProfileManager = () => {
       ),
     },
     {
+      id: "preferences",
+      label: "تنظیمات",
+      content: <div>تنظیمات برگزیده</div>,
+    },
+    {
       id: "activity",
-      label: "Activity",
+      label: "فعالیت",
       content: <ActivityLog userId={profile?.id} />,
     },
   ]
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 text-right">
       <div className="mb-8 flex justify-between items-center">
-        <div>
+        <div className="text-right">
           <h1 className="text-3xl font-bold text-default-900">
-            Profile Settings
+            تنظیمات پروفایل
           </h1>
           <p className="text-default-500 mt-2">
-            Manage your account information and security
+            اطلاعات حساب کاربری و تنظیمات خود را مدیریت کنید
           </p>
         </div>
         <Button color="danger" variant="flat" onClick={handleLogout}>
-          Sign Out
+          خروج از سیستم
         </Button>
       </div>
 

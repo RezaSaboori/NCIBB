@@ -1,7 +1,7 @@
 import React from "react"
 
 const SecuritySettings = () => {
-  return <div>Security Settings Component</div>
+  return <div>تنظیمات امنیتی</div>
 }
 
 export default SecuritySettings

@@ -54,13 +54,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return None
     
     def get_full_name(self, obj):
-        if obj.first_name and obj.last_name:
-            return f"{obj.first_name} {obj.last_name}"
+        if obj.user.first_name and obj.user.last_name:
+            return f"{obj.user.first_name} {obj.user.last_name}"
         return obj.display_name or obj.user.username
     
     def get_initials(self, obj):
-        if obj.first_name and obj.last_name:
-            return f"{obj.first_name[0]}{obj.last_name[0]}".upper()
+        if obj.user.first_name and obj.user.last_name:
+            return f"{obj.user.first_name[0]}{obj.user.last_name[0]}".upper()
         name = obj.display_name or obj.user.username
         return name[:2].upper() if name else 'UN'
     
@@ -196,16 +196,65 @@ class UserPreferencesSerializer(serializers.ModelSerializer):
         exclude = ['user', 'created_at', 'updated_at']
 
 class CompleteUserProfileSerializer(serializers.ModelSerializer):
-    """Complete user data with nested profile information"""
+    """
+    Complete user data serializer that handles flat data for updates
+    and provides a nested structure for reads.
+    """
+    # For reading data (serialization)
     profile = UserProfileSerializer(read_only=True)
     privacy_settings = PrivacySettingsSerializer(read_only=True)
     preferences = UserPreferencesSerializer(read_only=True)
+
+    # For writing data (deserialization) - we define fields from UserProfile here
+    # with `source` to handle flat data structure.
+    first_name = serializers.CharField(max_length=100, required=False)
+    last_name = serializers.CharField(max_length=100, required=False)
+    display_name = serializers.CharField(source='profile.display_name', max_length=150, required=False, allow_blank=True)
+    bio = serializers.CharField(source='profile.bio', max_length=2000, required=False, allow_blank=True)
+    job_title = serializers.CharField(source='profile.job_title', max_length=200, required=False, allow_blank=True)
+    company = serializers.CharField(source='profile.company', max_length=200, required=False, allow_blank=True)
+    department = serializers.CharField(source='profile.department', max_length=200, required=False, allow_blank=True)
+    city = serializers.CharField(source='profile.city', max_length=100, required=False, allow_blank=True)
+    state_province = serializers.CharField(source='profile.state_province', max_length=100, required=False, allow_blank=True)
+    country = serializers.CharField(source='profile.country', max_length=100, required=False, allow_blank=True)
+    gender = serializers.CharField(source='profile.gender', max_length=20, required=False, allow_blank=True)
     
     class Meta:
         model = User
-        fields = [
-            'id', 'username', 'email', 'phone', 'is_email_verified',
-            'is_phone_verified', 'two_factor_enabled', 'last_activity',
-            'profile_completion_score', 'profile', 'privacy_settings', 'preferences'
-        ]
-        read_only_fields = ['id', 'is_email_verified', 'is_phone_verified', 'last_activity']
+        fields = (
+            # Read-only fields
+            'id', 'is_email_verified', 'is_phone_verified', 'last_activity', 
+            'profile_completion_score', 'profile', 'privacy_settings', 'preferences',
+            
+            # Writable fields for User
+            'username', 'email', 'phone', 'first_name', 'last_name', 
+            
+            # Writable fields for UserProfile (via source)
+            'display_name', 'bio', 'job_title', 'company', 'department',
+            'city', 'state_province', 'country', 'gender'
+        )
+        read_only_fields = ('id', 'is_email_verified', 'is_phone_verified', 'last_activity', 'profile_completion_score')
+
+    def update(self, instance, validated_data):
+        # Pop the nested profile data that DRF creates because of the 'source' attribute
+        profile_data = validated_data.pop('profile', {})
+
+        # Update the User model instance with its fields
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.save()
+
+        # Update the related UserProfile model instance
+        profile = instance.profile
+        for attr, value in profile_data.items():
+            setattr(profile, attr, value)
+        
+        # Sync the User's name to the UserProfile's name fields to resolve data duplication
+        profile.first_name = instance.first_name
+        profile.last_name = instance.last_name
+        profile.save()
+
+        return instance

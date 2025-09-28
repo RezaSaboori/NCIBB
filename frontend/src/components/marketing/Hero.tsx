@@ -27,20 +27,20 @@ export const Hero: React.FC<HeroProps> = ({
     <div className="relative">
       <div className="container mx-auto px-6 py-20 text-center">
         <h1 className="text-5xl font-bold text-gray-800 dark:text-white">
-          {title}
+          به NCIBB خوش آمدید
         </h1>
         <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
-          {subtitle}
+          ما به شما کمک می کنیم تا به اهداف خود برسید
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-8 flex justify-center gap-4" dir="rtl">
           <Link to={primaryAction.link}>
             <Button color="primary" size="lg">
-              {primaryAction.text}
+              شروع کنید
             </Button>
           </Link>
           <Link to={secondaryAction.link}>
             <Button variant="bordered" size="lg">
-              {secondaryAction.text}
+              بیشتر بدانید
             </Button>
           </Link>
         </div>

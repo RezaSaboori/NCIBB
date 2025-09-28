@@ -14,7 +14,7 @@ export default function DefaultLayout({
         {children}
       </main>
       <footer className="w-full flex items-center justify-center py-3">
-        <span className="text-default-600">Powered by NCIBB</span>
+        <span className="text-default-600">طراحی شده توسط NCIBB</span>
       </footer>
     </div>
   )

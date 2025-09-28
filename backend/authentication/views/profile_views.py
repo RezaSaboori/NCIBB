@@ -49,27 +49,55 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         # Recalculate completion percentage
         instance.calculate_completion()
     
-    @action(detail=False, methods=['get'], url_path='me')
+    @action(detail=False, methods=['get', 'put', 'patch'], url_path='me')
     def me(self, request):
-        """Get current user's complete profile"""
-        try:
-            user_instance = User.objects.get(pk=request.user.pk)
-            # Eager load related objects
-            user_instance = User.objects.select_related('profile', 'privacy_settings', 'preferences').get(pk=request.user.pk)
-            
-            serializer = CompleteUserProfileSerializer(
-                user_instance, 
-                context={'request': request}
-            )
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            logger.error(f"Error fetching user profile for user {request.user.id}: {str(e)}")
-            return Response(
-                {'error': 'Failed to fetch profile'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+        """Get or update current user's complete profile"""
+        if request.method == 'GET':
+            try:
+                user_instance = User.objects.select_related(
+                    'profile', 'privacy_settings', 'preferences'
+                ).get(pk=request.user.pk)
+                
+                serializer = CompleteUserProfileSerializer(
+                    user_instance, 
+                    context={'request': request}
+                )
+                return Response(serializer.data)
+            except User.DoesNotExist:
+                return Response(
+                    {'error': 'User not found'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            except Exception as e:
+                logger.error(f"Error fetching profile for user {request.user.id}: {str(e)}")
+                return Response(
+                    {'error': 'Failed to fetch profile'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        
+        elif request.method in ['PUT', 'PATCH']:
+            try:
+                user_instance = User.objects.get(pk=request.user.pk)
+                serializer = CompleteUserProfileSerializer(
+                    user_instance, 
+                    data=request.data, 
+                    partial=request.method == 'PATCH',
+                    context={'request': request}
+                )
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data)
+            except User.DoesNotExist:
+                return Response(
+                    {'error': 'User not found'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            except Exception as e:
+                logger.error(f"Error updating profile for user {request.user.id}: {str(e)}")
+                return Response(
+                    {'error': 'Failed to update profile'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
     
     @action(detail=True, methods=['post'], url_path='upload-picture')
     def upload_picture(self, request, pk=None):

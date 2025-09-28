@@ -25,14 +25,11 @@ export const Header = ({ className }: HeaderProps) => {
 
   return (
     <div className={`header-container ${className || ""}`}>
-      <HomeButton ariaLabel="Home" title="Home" />
+      <HomeButton ariaLabel="خانه" title="خانه" />
 
       <Navigation items={navigationItems} />
 
-      <ProfileButton
-        ariaLabel="Profile"
-        title="User Profile"
-      />
+      <ProfileButton ariaLabel="پروفایل" title="پروفایل کاربر" />
 
       <ThemeToggle
         isToggled={theme === "dark"}
