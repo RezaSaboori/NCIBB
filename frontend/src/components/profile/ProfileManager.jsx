@@ -1,14 +1,6 @@
 // frontend/src/components/profile/ProfileManager.jsx
 import React, { useState, useEffect, useCallback } from "react"
-import {
-  Card,
-  CardBody,
-  Tabs,
-  Tab,
-  Spinner,
-  Alert,
-  Button,
-} from "@heroui/react"
+import { Card, CardBody, Spinner, Alert, Button } from "@heroui/react"
 import { useSelector, useDispatch } from "react-redux"
 import { profileService } from "../../services/profileService"
 import { logoutSuccess } from "../../store/authSlice" // Import logout action
@@ -162,7 +154,7 @@ const ProfileManager = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <div className="mb-8 flex justify-between items-center">
+      <div className="mb-8">
         <div>
           <h1 className="text-3xl font-bold text-default-900">
             تنظیمات پروفایل
@@ -171,33 +163,44 @@ const ProfileManager = () => {
             اطلاعات حساب کاربری و تنظیمات خود را مدیریت کنید
           </p>
         </div>
-        <Button color="danger" variant="flat" onClick={handleLogout}>
-          خروج
-        </Button>
       </div>
 
-      <Card className="w-full">
-        <CardBody className="p-0">
-          <Tabs
-            selectedKey={activeTab}
-            onSelectionChange={setActiveTab}
-            variant="underlined"
-            classNames={{
-              tabList:
-                "gap-6 w-full relative rounded-none p-6 border-b border-divider",
-              cursor: "w-full bg-primary",
-              tab: "max-w-fit px-4 h-12",
-              tabContent: "group-data-[selected=true]:text-primary",
-            }}
-          >
-            {tabs.map((tab) => (
-              <Tab key={tab.id} title={tab.label}>
-                <div className="p-6">{tab.content}</div>
-              </Tab>
-            ))}
-          </Tabs>
-        </CardBody>
-      </Card>
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-4">
+          <Card>
+            <CardBody>
+              <div className="flex flex-col gap-2">
+                {tabs.map((tab) => (
+                  <Button
+                    key={tab.id}
+                    variant={activeTab === tab.id ? "solid" : "flat"}
+                    color={activeTab === tab.id ? "primary" : "default"}
+                    onClick={() => setActiveTab(tab.id)}
+                    className="w-full justify-start text-right"
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onClick={handleLogout}
+                  className="w-full justify-start text-right mt-4"
+                >
+                  خروج
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+        <div className="col-span-12 lg:col-span-8">
+          <Card>
+            <CardBody className="p-6">
+              {tabs.find((tab) => tab.id === activeTab)?.content}
+            </CardBody>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
