@@ -1,0 +1,7 @@
+.modal-container {
+  z-index: -1;
+}
+
+.modal-container.active {
+  z-index: 1000000;
+}

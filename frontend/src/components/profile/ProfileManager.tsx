@@ -1,31 +1,62 @@
-// frontend/src/components/profile/ProfileManager.jsx
+// frontend/src/components/profile/ProfileManager.tsx
 import React, { useState, useEffect, useCallback } from "react"
-import { Card, CardBody, Spinner, Alert, Button } from "@heroui/react"
+import { Spinner, Alert, Button } from "@heroui/react"
 import { useSelector, useDispatch } from "react-redux"
+// @ts-expect-error JS module without types
 import { profileService } from "../../services/profileService"
 import { logoutSuccess } from "../../store/authSlice" // Import logout action
 import { authService } from "../../services/authService"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useOutletContext } from "react-router-dom"
+// @ts-expect-error JSX module without types
 import ProfileForm from "./ProfileForm"
+// @ts-expect-error JSX module without types
 import SecuritySettings from "./SecuritySettings"
+// @ts-expect-error JSX module without types
 import PreferencesSettings from "./PreferencesSettings"
+// @ts-expect-error JSX module without types
 import ActivityLog from "./ActivityLog"
+import Sidebar from "./sidebar"
+// @ts-expect-error JSX module without types
+import CompletionCard from "./CompletionCard"
+import { RootState } from "../../store/store"
 
-const ProfileManager = () => {
-  const [activeTab, setActiveTab] = useState("profile")
-  const { user, isAuthenticated } = useSelector((state) => state.auth)
-  const [profileData, setProfileData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [saving, setSaving] = useState(false)
+// Removed unused User interface (came from JS store)
+
+interface ProfileData {
+  preferences: any
+  // Add other profile properties here
+}
+
+const ProfileManager: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>("dashboard")
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  )
+  const [profileData, setProfileData] = useState<ProfileData | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [saving, setSaving] = useState<boolean>(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const { setSidebar } = useOutletContext<any>()
+
+  useEffect(() => {
+    setSidebar(
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onLogout={handleLogout}
+      />
+    )
+    return () => setSidebar(null)
+  }, [activeTab, setSidebar])
 
   const handleLogout = async () => {
     try {
       await authService.logout()
       dispatch(logoutSuccess())
-      navigate("/login")
+      navigate("/")
     } catch (error) {
       console.error("Logout failed:", error)
       // Optionally, show an error message to the user
@@ -43,7 +74,7 @@ const ProfileManager = () => {
       const data = await profileService.getCurrentProfile()
       setProfileData(data)
       setError(null)
-    } catch (err) {
+    } catch (err: any) {
       setError("Failed to load profile data")
       console.error("Profile load error:", err)
       if (err.response && err.response.status === 401) {
@@ -58,11 +89,11 @@ const ProfileManager = () => {
     loadProfile()
   }, [loadProfile])
 
-  const handleProfileUpdate = async (updatedData) => {
+  const handleProfileUpdate = async (updatedData: any) => {
     try {
       setSaving(true)
       const response = await profileService.updateProfile(updatedData)
-      setProfileData((prev) => ({ ...prev, profile: response }))
+      setProfileData((prev) => ({ ...prev, profile: response }) as ProfileData)
       // You might want to refresh the user data in Redux state here
       return response
     } catch (error) {
@@ -111,8 +142,21 @@ const ProfileManager = () => {
 
   const tabs = [
     {
+      id: "dashboard",
+      label: "داشبورد",
+      content: (
+        <div className="space-y-6">
+          <CompletionCard
+            data={(profileData as any)?.completion}
+            onRefresh={loadProfile}
+          />
+          <ActivityLog userId={(user as any)?.id ?? ""} />
+        </div>
+      ),
+    },
+    {
       id: "profile",
-      label: "Profile",
+      label: "پروفایل",
       content: (
         <ProfileForm
           profileData={profileData}
@@ -122,83 +166,43 @@ const ProfileManager = () => {
         />
       ),
     },
-    // Privacy tab removed
     {
-      id: "security",
-      label: "Security",
-      content: (
-        <SecuritySettings
-          userData={{ ...user, ...profileData }} // Combine Redux user with profile data
-          onUpdate={handleProfileUpdate}
-          saving={saving}
-        />
-      ),
+      id: "messages",
+      label: "پیام ها",
+      content: <div className="p-4">بخش پیام‌ها در دسترس نیست.</div>,
     },
     {
-      id: "preferences",
-      label: "Preferences",
-      content: (
-        <PreferencesSettings
-          preferencesData={profileData?.preferences}
-          onUpdate={handleProfileUpdate}
-          saving={saving}
-        />
-      ),
+      id: "projects",
+      label: "پروژه ها",
+      content: <div className="p-4">بخش پروژه‌ها در دسترس نیست.</div>,
     },
     {
-      id: "activity",
-      label: "Activity",
-      content: <ActivityLog userId={user?.id} />,
+      id: "learning",
+      label: "آموزش",
+      content: (
+        <div className="space-y-6">
+          <PreferencesSettings
+            preferencesData={profileData?.preferences}
+            onUpdate={handleProfileUpdate}
+            saving={saving}
+          />
+          <SecuritySettings
+            userData={{ ...(user as any), ...(profileData as any) }}
+            onUpdate={handleProfileUpdate}
+            saving={saving}
+          />
+        </div>
+      ),
     },
   ]
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-default-900">
-            تنظیمات پروفایل
-          </h1>
-          <p className="text-default-500 mt-2">
-            اطلاعات حساب کاربری و تنظیمات خود را مدیریت کنید
-          </p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-4">
-          <Card>
-            <CardBody>
-              <div className="flex flex-col gap-2">
-                {tabs.map((tab) => (
-                  <Button
-                    key={tab.id}
-                    variant={activeTab === tab.id ? "solid" : "flat"}
-                    color={activeTab === tab.id ? "primary" : "default"}
-                    onClick={() => setActiveTab(tab.id)}
-                    className="w-full justify-start text-right"
-                  >
-                    {tab.label}
-                  </Button>
-                ))}
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onClick={handleLogout}
-                  className="w-full justify-start text-right mt-4"
-                >
-                  خروج
-                </Button>
-              </div>
-            </CardBody>
-          </Card>
-        </div>
-        <div className="col-span-12 lg:col-span-8">
-          <Card>
-            <CardBody className="p-6">
-              {tabs.find((tab) => tab.id === activeTab)?.content}
-            </CardBody>
-          </Card>
+    <div className="p-6 ml-0 mr-7 w-100vw overflow-x-hidden">
+      <div className="mx-auto w-full min-w-0">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12">
+            {tabs.find((tab) => tab.id === activeTab)?.content}
+          </div>
         </div>
       </div>
     </div>

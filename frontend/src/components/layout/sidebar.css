@@ -1,0 +1,173 @@
+@import "../../styles/theme.css";
+
+/* Adapted from .header-nav to create the sidebar container */
+.sidebar-nav {
+  position: fixed;
+  z-index: 1;
+  top: 2rem;
+  right: 2rem; /* Positioned on the right for RTL layout */
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 260px;
+  box-sizing: border-box;
+  padding: 10px;
+  border: none;
+  border-radius: 30px; /* Changed from pill shape to rounded rectangle */
+  font-size: 15px;
+  background-image: linear-gradient(
+    135deg,
+    var(--color-gray1),
+    var(--color-gray2) 40%
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-gray1) 10%, transparent),
+    inset 1.8px 3px 0px -2px
+      color-mix(in srgb, var(--color-gray1) 90%, transparent),
+    inset -2px -2px 0px -2px
+      color-mix(in srgb, var(--color-gray1) 30%, transparent),
+    inset -3px -12px 1px -8px
+      color-mix(in srgb, var(--color-gray1) 10%, transparent),
+    inset -0.3px -1px 4px 0px
+      color-mix(in srgb, #000 calc(1 * 12%), transparent),
+    inset -1.5px 2.5px 0px -2px
+      color-mix(in srgb, #000 calc(1 * 20%), transparent),
+    inset 0px 3px 4px -2px color-mix(in srgb, #000 calc(1 * 20%), transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000 calc(1 * 10%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 10%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 8%), transparent);
+  transition:
+    background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+    box-shadow 400ms cubic-bezier(1, 0, 0.4, 1);
+}
+.sidebar-nav__legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+.sidebar-nav__input {
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.sidebar-nav__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative; /* Needed for the ::after element to be positioned correctly */
+  z-index: 0;
+}
+
+.sidebar-nav__item {
+  --c: var(--color-gray9); /* Default color for text and icon */
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 14px;
+  opacity: 1;
+  transition: all 160ms;
+  gap: 16px;
+  color: var(--c);
+  font-weight: 500;
+}
+.sidebar-nav__item:hover {
+  --c: var(--color-blue);
+  cursor: pointer;
+}
+.sidebar-nav__item:hover .sidebar-nav__icon {
+  scale: 1.15;
+}
+.sidebar-nav__item:has(input:checked) {
+  color: var(--color-gray1); /* Sets active text to white */
+  --c: var(--color-gray1); /* Sets active icon color to white */
+  cursor: auto;
+}
+.sidebar-nav__icon {
+  transition: scale 160ms;
+}
+
+/* The active item indicator is an ::after pseudo-element */
+.sidebar-nav__menu::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  /* JS will set height and top position */
+  height: var(--active-indicator-height);
+  transform: translateY(var(--active-indicator-top));
+  transition:
+    transform 300ms ease,
+    height 300ms ease;
+  display: block;
+  border-radius: 99em;
+  background-color: color-mix(in srgb, var(--color-blue) 80%, transparent);
+  z-index: -1;
+  /* Copied shadow styles for the active indicator */
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #01eeff 20%, transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, #01eeff 90%, transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, #01eeff 80%, transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, #01eeff 60%, transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, #001130 25%, transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, #000820 15%, transparent),
+    inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
+}
+
+/* Pushes the bottom menu group down */
+.sidebar-nav__bottom-menu {
+  margin-top: auto;
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .sidebar-nav {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-gray2),
+    var(--color-gray1) 30%
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-gray8) 4%, transparent),
+    inset 1.8px 3px 0px -2px
+      color-mix(in srgb, var(--color-gray8) 12%, transparent),
+    inset -2px -2px 0px -2px
+      color-mix(in srgb, var(--color-gray8) 10%, transparent),
+    inset -3px -8px 1px -6px
+      color-mix(in srgb, var(--color-gray8) 8%, transparent),
+    inset -0.3px -1px 4px 0px
+      color-mix(in srgb, var(--color-gray7) calc(1 * 25%), transparent),
+    inset -1.5px 2.5px 0px -2px
+      color-mix(in srgb, #000000 calc(1 * 30%), transparent),
+    inset 0px 3px 4px -2px color-mix(in srgb, #000 calc(1 * 30%), transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000000 calc(1 * 25%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000000 calc(1 * 15%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000000 calc(1 * 12%), transparent);
+}
+
+[data-theme="dark"] .sidebar-nav__item {
+  --c: var(--color-gray11);
+}
+
+[data-theme="dark"] .sidebar-nav__item:has(input:checked) {
+  color: var(--color-gray12);
+  --c: var(--color-gray12);
+}
+
+[data-theme="dark"] .sidebar-nav__menu::after {
+  background-color: color-mix(in srgb, var(--color-blue) 90%, transparent);
+}

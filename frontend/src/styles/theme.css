@@ -273,4 +273,55 @@ body {
     background-color var(--motion-duration-normal)
       var(--motion-easing-easeInOut),
     color var(--motion-duration-normal) var(--motion-easing-easeInOut);
+  background-color: var(--color-gray2);
+}
+
+/*
+ * ========================================
+ * Reusable Layout Utility Containers
+ * ========================================
+ * Use: <div class="u-container u-container--lg"> ... </div>
+ * You can override tokens per subtree by redefining --p, --gap, --radius.
+ */
+.u-container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: inherit;
+  align-items: inherit;
+  height: auto;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-wrap: break-word;
+  padding: var(--p, var(--spacing-lg));
+  gap: var(--gap, var(--spacing-lg));
+  border-radius: var(--radius, var(--border-radius-container-lg));
+}
+
+/* Size presets (can be extended as needed) */
+.u-container--sm {
+  --p: var(--spacing-md);
+  --gap: var(--spacing-md);
+  --radius: var(--border-radius-container-sm);
+}
+
+.u-container--md {
+  --p: var(--spacing-lg);
+  --gap: var(--spacing-lg);
+  --radius: var(--border-radius-container-md);
+}
+
+.u-container--lg {
+  --p: var(--spacing-lg);
+  --gap: var(--spacing-lg);
+  --radius: var(--border-radius-container-lg);
+}
+
+.u-container--xl {
+  --p: var(--spacing-xl);
+  --gap: var(--spacing-xl);
+  --radius: var(--border-radius-container-xl);
 }

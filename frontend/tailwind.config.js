@@ -15,10 +15,44 @@ export default {
   darkMode: "class",
   plugins: [
     heroui({
+      layout: {
+        dividerWeight: "var(--border-width-thin)",
+        disabledOpacity: 0.5,
+        fontSize: {
+          tiny: "var(--font-size-xs)",
+          small: "var(--font-size-sm)",
+          medium: "var(--font-size-base)",
+          large: "var(--font-size-lg)",
+        },
+        lineHeight: {
+          tiny: "calc(1rem * var(--line-height-tight))",
+          small: "calc(1rem * var(--line-height-normal))",
+          medium: "calc(1rem * var(--line-height-normal))",
+          large: "calc(1rem * var(--line-height-relaxed))",
+        },
+        radius: {
+          small: "var(--border-radius-item-sm)",
+          medium: "var(--border-radius-item-md)",
+          large: "var(--border-radius-item-lg)",
+        },
+        borderWidth: {
+          small: "var(--border-width-thin)",
+          medium: "var(--border-width-normal)",
+          large: "var(--border-width-thick)",
+        },
+      },
       themes: {
         light: {
+          layout: {
+            hoverOpacity: 0.8,
+            boxShadow: {
+              small: "var(--elevation-1)",
+              medium: "var(--elevation-2)",
+              large: "var(--elevation-4)",
+            },
+          },
           colors: {
-            background: "rgb(248, 248, 248)", // gray1
+            background: "rgb(228, 228, 228)", // gray2 to match body
             foreground: "rgb(7, 7, 7)", // gray12
             content1: "rgb(255, 255, 255)",
             primary: {
@@ -56,8 +90,16 @@ export default {
           },
         },
         dark: {
+          layout: {
+            hoverOpacity: 0.9,
+            boxShadow: {
+              small: "var(--elevation-1)",
+              medium: "var(--elevation-2)",
+              large: "var(--elevation-4)",
+            },
+          },
           colors: {
-            background: "rgb(7, 7, 7)", // dark gray1
+            background: "rgb(27, 27, 27)", // dark gray2 to match body
             foreground: "rgb(248, 248, 248)", // dark gray12
             content1: "rgb(27, 27, 27)",
             primary: {

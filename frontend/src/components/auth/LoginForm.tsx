@@ -65,6 +65,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           defaultValue=""
           render={({ field }) => (
             <Input
+              radius="full"
               {...field}
               isRequired
               label="ایمیل"
@@ -76,6 +77,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
               classNames={{
                 label: "text-right",
                 input: "text-right",
+                inputWrapper:
+                  "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
               }}
             />
           )}
@@ -86,6 +89,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           defaultValue=""
           render={({ field }) => (
             <Input
+              radius="full"
               {...field}
               isRequired
               label="رمز عبور"
@@ -97,6 +101,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
               classNames={{
                 label: "text-right",
                 input: "text-right",
+                inputWrapper:
+                  "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
               }}
             />
           )}

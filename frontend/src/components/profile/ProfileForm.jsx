@@ -16,7 +16,6 @@ import {
   Divider,
   Progress,
   Chip,
-  // User, // removed
   Modal,
   ModalContent,
   ModalHeader,
@@ -28,6 +27,7 @@ import { Icon } from "@iconify/react"
 import { profileService } from "../../services/profileService"
 import ImageCropModal from "./ImageCropModal"
 import CompletionCard from "./CompletionCard"
+import "./modal.css"
 
 const profileSchema = yup.object({
   first_name: yup
@@ -40,10 +40,11 @@ const profileSchema = yup.object({
     .min(2, "نام خانوادگی باید حداقل ۲ کاراکتر باشد")
     .max(50, "نام خانوادگی باید کمتر از ۵۰ کاراکتر باشد")
     .required("نام خانوادگی الزامی است"),
-  display_name: yup
+  email: yup.string().email("ایمیل نامعتبر است").required("ایمیل الزامی است"),
+  phone: yup
     .string()
-    .max(100, "نام نمایشی باید کمتر از ۱۰۰ کاراکتر باشد"),
-  bio: yup.string().max(2000, "بیوگرافی باید کمتر از ۲۰۰۰ کاراکتر باشد"),
+    .matches(/^(\+98|0)?9\d{9}$/, "شماره موبایل معتبر نیست")
+    .required("شماره موبایل الزامی است"),
   job_title: yup.string().max(200, "عنوان شغلی باید کمتر از ۲۰۰ کاراکتر باشد"),
   company: yup.string().max(200, "نام شرکت باید کمتر از ۲۰۰ کاراکتر باشد"),
 })
@@ -51,12 +52,11 @@ const profileSchema = yup.object({
 const genderOptions = [
   { key: "male", label: "مرد" },
   { key: "female", label: "زن" },
-  { key: "other", label: "دیگر" },
-  { key: "prefer_not_to_say", label: "ترجیح می دهم نگویم" },
 ]
 
 const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
-  const [editMode, setEditMode] = useState(false)
+  const [basicEditMode, setBasicEditMode] = useState(false)
+  const [professionalEditMode, setProfessionalEditMode] = useState(false)
   const [completionData, setCompletionData] = useState(null)
   const [imageFile, setImageFile] = useState(null)
   const fileInputRef = useRef(null)
@@ -81,8 +81,8 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
     defaultValues: {
       first_name: profileData?.profile?.first_name || "",
       last_name: profileData?.profile?.last_name || "",
-      display_name: profileData?.profile?.display_name || "",
-      bio: profileData?.profile?.bio || "",
+      email: profileData?.email || "",
+      phone: profileData?.phone || "",
       job_title: profileData?.profile?.job_title || "",
       company: profileData?.profile?.company || "",
       department: profileData?.profile?.department || "",
@@ -100,12 +100,12 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
 
   React.useEffect(() => {
     // Reset form when profileData changes
-    if (profileData?.profile) {
+    if (profileData) {
       reset({
         first_name: profileData.profile.first_name || "",
         last_name: profileData.profile.last_name || "",
-        display_name: profileData.profile.display_name || "",
-        bio: profileData.profile.bio || "",
+        email: profileData.email || "",
+        phone: profileData.phone || "",
         job_title: profileData.profile.job_title || "",
         company: profileData.profile.company || "",
         department: profileData.profile.department || "",
@@ -126,14 +126,40 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
     }
   }
 
-  const onSubmit = async (formData) => {
+  const onSubmitBasic = async (formData) => {
     try {
-      await onUpdate(formData)
-      setEditMode(false)
-      await onRefresh() // Refetch profile data
+      const basicPayload = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        phone: formData.phone,
+        gender: formData.gender,
+      }
+      await onUpdate(basicPayload)
+      setBasicEditMode(false)
+      await onRefresh()
       await loadCompletionData()
     } catch (error) {
-      console.error("Failed to update profile:", error)
+      console.error("Failed to update basic info:", error)
+    }
+  }
+
+  const onSubmitProfessional = async (formData) => {
+    try {
+      const professionalPayload = {
+        job_title: formData.job_title,
+        company: formData.company,
+        department: formData.department,
+        city: formData.city,
+        state_province: formData.state_province,
+        country: formData.country,
+      }
+      await onUpdate(professionalPayload)
+      setProfessionalEditMode(false)
+      await onRefresh()
+      await loadCompletionData()
+    } catch (error) {
+      console.error("Failed to update professional info:", error)
     }
   }
 
@@ -176,47 +202,52 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
   const profile = profileData?.profile
 
   return (
-    <div className="space-y-6 text-right">
-      {/* Completion Status */}
-      {completionData && (
-        <CompletionCard data={completionData} onRefresh={loadCompletionData} />
-      )}
+    <div
+      className="u-container u-container--lg text-right overflow-hidden rounded-none"
+      style={{ "--radius": "0" }}
+    >
+      {/* Instruction and Avatar side-by-side */}
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-stretch w-full">
+        <Card className="h-full w-full lg:order-2 shadow-none rounded-4xl p-[var(--gap)] bg-[var(--color-gray1)]">
+          <CardBody className="h-full flex items-center">
+            <p>
+              جهت به‌روزرسانی و تغییر اطلاعات، روی «ویرایش» هر بخش کلیک کرده و
+              بعد از اتمام بر روی «ذخیره تغییرات» کلیک کنید.
+            </p>
+          </CardBody>
+        </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Picture Section */}
-        <div className="lg:col-span-1">
-          <Card className="p-6">
-            <CardBody className="flex flex-col items-center space-y-4">
-              <div className="relative">
-                <Avatar
-                  src={profile?.profile_picture_url || "/default-profile.png"}
-                  name={profile?.initials || "U"}
-                  className="w-32 h-32 text-2xl"
-                  isBordered
-                  color="primary"
-                />
+        <Card className="h-52 w-52 lg:order-1 lg:justify-self-start p-0 shadow-none bg-transparent">
+          <CardBody className="flex flex-col h-fit items-center p-0">
+            <div className="relative">
+              <Avatar
+                src={profile?.profile_picture_url || "/default-profile.png"}
+                name={profile?.initials || "U"}
+                className="w-32 h-32 text-2xl shadow-lg"
+              />
 
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
 
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="solid"
-                  color="primary"
-                  className="absolute -bottom-2 -right-2"
-                  onPress={() => fileInputRef.current?.click()}
-                >
-                  <Icon icon="heroicons:photo" className="w-4 h-4" />
-                </Button>
-              </div>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="solid"
+                color="primary"
+                className="absolute -bottom-1 -right-0 rounded-full"
+                onPress={() => fileInputRef.current?.click()}
+              >
+                <Icon icon="fluent:edit-24-regular" className="w-4 h-4" />
+              </Button>
+            </div>
 
-              <div className="text-center">
+            <div className="flex flex-col items-center text-center mt-auto r">
+              <div className="flex flex-col text-center items-center">
                 <h3 className="text-lg font-semibold">
                   {profile?.full_name || "کاربر ناشناس"}
                 </h3>
@@ -240,40 +271,43 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                   حذف عکس
                 </Button>
               )}
-            </CardBody>
-          </Card>
-        </div>
+            </div>
+          </CardBody>
+        </Card>
+      </div>
 
-        {/* Profile Form */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader className="flex justify-between items-center">
-              <div>
-                <h3 className="text-xl font-semibold">اطلاعات پروفایل</h3>
-                <p className="text-small text-default-500">
-                  اطلاعات شخصی و تنظیمات خود را به روز کنید
-                </p>
-              </div>
+      {completionData && (
+        <CompletionCard data={completionData} onRefresh={loadCompletionData} />
+      )}
 
-              {!editMode ? (
+      <div className="grid grid-cols-1 gap-[var(--gap)] ">
+        {/* Profile Form - split into two sections */}
+        <div className="space-y-[var(--gap)]">
+          {/* Basic Information Card */}
+          <Card className="shadow-none rounded-4xl p-[var(--gap)] p-t-0 bg-[var(--color-gray1)] mt-16">
+            <CardHeader className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">اطلاعات پایه</h3>
+              {!basicEditMode ? (
                 <Button
                   color="primary"
+                  className="rounded-full"
                   variant="flat"
                   startContent={
                     <Icon icon="heroicons:pencil" className="w-4 h-4" />
                   }
-                  onPress={() => setEditMode(true)}
+                  onPress={() => setBasicEditMode(true)}
                 >
-                  ویرایش پروفایل
+                  ویرایش
                 </Button>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex gap-[calc(var(--gap)/3)]">
                   <Button
                     color="primary"
+                    className="rounded-full"
                     startContent={
                       <Icon icon="heroicons:check" className="w-4 h-4" />
                     }
-                    onPress={handleSubmit(onSubmit)}
+                    onPress={handleSubmit(onSubmitBasic)}
                     isLoading={saving}
                     isDisabled={!isValid || !isDirty}
                   >
@@ -281,8 +315,9 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                   </Button>
                   <Button
                     variant="flat"
+                    className="rounded-full"
                     onPress={() => {
-                      setEditMode(false)
+                      setBasicEditMode(false)
                       reset()
                     }}
                   >
@@ -291,279 +326,325 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
                 </div>
               )}
             </CardHeader>
-
-            <Divider />
-
-            <CardBody className="space-y-6">
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Basic Information */}
-                <div>
-                  <h4 className="text-lg font-medium mb-4 text-right">
-                    اطلاعات پایه
-                  </h4>
-                  <div
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                    dir="rtl"
-                  >
-                    <Controller
-                      name="first_name"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="نام"
-                          placeholder="نام خود را وارد کنید"
-                          isRequired
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.first_name}
-                          errorMessage={errors.first_name?.message}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="last_name"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="نام خانوادگی"
-                          placeholder="نام خانوادگی خود را وارد کنید"
-                          isRequired
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.last_name}
-                          errorMessage={errors.last_name?.message}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="display_name"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="نام نمایشی"
-                          placeholder="چگونه شما را خطاب کنیم؟"
-                          isDisabled={!editMode}
-                          description="این نام به سایر کاربران نمایش داده خواهد شد"
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                            description: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="gender"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          label="جنسیت"
-                          placeholder="جنسیت خود را انتخاب کنید"
-                          isDisabled={!editMode}
-                          selectedKeys={field.value ? [field.value] : []}
-                          onSelectionChange={(keys) => {
-                            const selectedValue = Array.from(keys)[0]
-                            field.onChange(selectedValue || "")
-                          }}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            value: "text-right",
-                            trigger: "text-right",
-                          }}
-                        >
-                          {genderOptions.map((option) => (
-                            <SelectItem key={option.key} value={option.key}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* Bio */}
-                <div>
+            <CardBody>
+              <form onSubmit={handleSubmit(onSubmitBasic)}>
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-[calc(var(--gap)/2)]"
+                  dir="rtl"
+                >
                   <Controller
-                    name="bio"
+                    name="first_name"
                     control={control}
                     render={({ field }) => (
-                      <Textarea
+                      <Input
+                        radius="full"
                         {...field}
-                        label="بیوگرافی"
-                        placeholder="درباره خودتان به ما بگویید..."
-                        minRows={3}
-                        maxRows={6}
-                        isDisabled={!editMode}
-                        isInvalid={!!errors.bio}
-                        errorMessage={errors.bio?.message}
-                        description={`${field.value?.length || 0}/2000 کاراکتر`}
+                        label="نام"
+                        placeholder="نام خود را وارد کنید"
+                        isRequired
+                        isDisabled={!basicEditMode}
+                        isInvalid={!!errors.first_name}
+                        errorMessage={errors.first_name?.message}
                         labelPlacement="outside"
                         classNames={{
                           label: "text-right",
                           input: "text-right",
-                          description: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="last_name"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="نام خانوادگی"
+                        placeholder="نام خانوادگی خود را وارد کنید"
+                        isRequired
+                        isDisabled={!basicEditMode}
+                        isInvalid={!!errors.last_name}
+                        errorMessage={errors.last_name?.message}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="ایمیل"
+                        isReadOnly
+                        isDisabled={true}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="شماره موبایل"
+                        placeholder="شماره موبایل خود را وارد کنید"
+                        isDisabled={!basicEditMode}
+                        isInvalid={!!errors.phone}
+                        errorMessage={errors.phone?.message}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        radius="full"
+                        {...field}
+                        label="جنسیت"
+                        placeholder="جنسیت"
+                        isDisabled={!basicEditMode}
+                        selectedKeys={field.value ? [field.value] : []}
+                        onSelectionChange={(keys) => {
+                          const selectedValue = Array.from(keys)[0]
+                          field.onChange(selectedValue || "")
+                        }}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          value: "text-right",
+                          trigger:
+                            "rounded-full text-right bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[placeholder=true]:bg-gray2 data-[has-value=false]:bg-gray2",
+                        }}
+                      >
+                        {genderOptions.map((option) => (
+                          <SelectItem key={option.key} value={option.key}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="شهر"
+                        placeholder="مثلا: تهران"
+                        isDisabled={!basicEditMode}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="state_province"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="استان"
+                        placeholder="مثلا: تهران"
+                        isDisabled={!basicEditMode}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="country"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="کشور"
+                        placeholder="مثلا: ایران"
+                        isDisabled={!basicEditMode}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              </form>
+            </CardBody>
+          </Card>
+
+          {/* Professional Information Card */}
+          <Card className="shadow-none rounded-4xl p-[var(--gap)] p-t-0 bg-[var(--color-gray1)]">
+            <CardHeader className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">اطلاعات حرفه ای</h3>
+              {!professionalEditMode ? (
+                <Button
+                  color="primary"
+                  className="rounded-full"
+                  variant="flat"
+                  startContent={
+                    <Icon icon="heroicons:pencil" className="w-4 h-4" />
+                  }
+                  onPress={() => setProfessionalEditMode(true)}
+                >
+                  ویرایش
+                </Button>
+              ) : (
+                <div className="flex gap-[calc(var(--gap)/3)]">
+                  <Button
+                    color="primary"
+                    className="rounded-full"
+                    startContent={
+                      <Icon icon="heroicons:check" className="w-4 h-4" />
+                    }
+                    onPress={handleSubmit(onSubmitProfessional)}
+                    isLoading={saving}
+                    isDisabled={!isValid || !isDirty}
+                  >
+                    ذخیره تغییرات
+                  </Button>
+                  <Button
+                    variant="flat"
+                    className="rounded-full"
+                    onPress={() => {
+                      setProfessionalEditMode(false)
+                      reset()
+                    }}
+                  >
+                    لغو
+                  </Button>
+                </div>
+              )}
+            </CardHeader>
+            <CardBody>
+              <form
+                onSubmit={handleSubmit(onSubmitProfessional)}
+                className="space-y-[var(--gap)]"
+              >
+                <div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-[calc(var(--gap)/2)]"
+                  dir="rtl"
+                >
+                  <Controller
+                    name="job_title"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="عنوان شغلی"
+                        placeholder="مثلا: مهندس نرم افزار"
+                        isDisabled={!professionalEditMode}
+                        isInvalid={!!errors.job_title}
+                        errorMessage={errors.job_title?.message}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="company"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        radius="full"
+                        {...field}
+                        label="شرکت"
+                        placeholder="مثلا: انستیتو قلب رجایی"
+                        isDisabled={!professionalEditMode}
+                        isInvalid={!!errors.company}
+                        errorMessage={errors.company?.message}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="department"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="دپارتمان"
+                        placeholder="مثلا: نوآوری و فناوری "
+                        isDisabled={!professionalEditMode}
+                        labelPlacement="outside"
+                        classNames={{
+                          label: "text-right",
+                          input: "text-right",
+                          inputWrapper:
+                            "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
                         }}
                       />
                     )}
                   />
                 </div>
 
-                {/* Professional Information */}
-                <div>
-                  <h4 className="text-lg font-medium mb-4 text-right">
-                    اطلاعات حرفه ای
-                  </h4>
-                  <div
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                    dir="rtl"
-                  >
-                    <Controller
-                      name="job_title"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="عنوان شغلی"
-                          placeholder="مثلا: مهندس نرم افزار"
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.job_title}
-                          errorMessage={errors.job_title?.message}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="company"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="شرکت"
-                          placeholder="مثلا: شرکت فناوری ABC"
-                          isDisabled={!editMode}
-                          isInvalid={!!errors.company}
-                          errorMessage={errors.company?.message}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="department"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="دپارتمان"
-                          placeholder="مثلا: مهندسی"
-                          isDisabled={!editMode}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* Location */}
-                <div>
-                  <h4 className="text-lg font-medium mb-4 text-right">مکان</h4>
-                  <div
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                    dir="rtl"
-                  >
-                    <Controller
-                      name="city"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="شهر"
-                          placeholder="مثلا: تهران"
-                          isDisabled={!editMode}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="state_province"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="استان"
-                          placeholder="مثلا: تهران"
-                          isDisabled={!editMode}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      name="country"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          label="کشور"
-                          placeholder="مثلا: ایران"
-                          isDisabled={!editMode}
-                          labelPlacement="outside"
-                          classNames={{
-                            label: "text-right",
-                            input: "text-right",
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
+                {/* Location moved to Basic Information */}
               </form>
             </CardBody>
           </Card>
         </div>
       </div>
 
-      <Modal isOpen={isCropOpen} onOpenChange={onCropClose}>
+      <Modal
+        isOpen={isCropOpen}
+        onOpenChange={onCropClose}
+        className="modal-container"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -587,7 +668,11 @@ const ProfileForm = ({ profileData, onUpdate, saving, onRefresh }) => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isDeleteOpen} onOpenChange={onDeleteClose}>
+      <Modal
+        isOpen={isDeleteOpen}
+        onOpenChange={onDeleteClose}
+        className="modal-container"
+      >
         <ModalContent>
           {(onClose) => (
             <>

@@ -25,6 +25,11 @@ declare module "./PreferencesSettings" {
   export default Component
 }
 
+declare module "./PreferencesSettings.jsx" {
+  const Component: React.ComponentType<any>
+  export default Component
+}
+
 declare module "./ActivityLog" {
   const Component: React.ComponentType<any>
   export default Component
@@ -33,4 +38,8 @@ declare module "./ActivityLog" {
 declare module "./ActivityLog.jsx" {
   const Component: React.ComponentType<any>
   export default Component
+}
+
+declare module "../../services/profileService" {
+  export const profileService: any
 }

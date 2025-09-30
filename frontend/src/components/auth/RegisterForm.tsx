@@ -57,7 +57,7 @@ const RegisterForm = () => {
       localStorage.setItem("refresh_token", userData.refresh)
       dispatch(loginSuccess(userData))
       dispatch(fetchUserProfile())
-      navigate("/profile")
+      navigate("/")
     } catch (error: any) {
       console.error("Registration failed:", error)
       setServerError(error?.response?.data ?? "An unexpected error occurred.")
@@ -92,6 +92,7 @@ const RegisterForm = () => {
         defaultValue=""
         render={({ field }) => (
           <Input
+            radius="full"
             {...field}
             isRequired
             label="نام کاربری"
@@ -102,6 +103,8 @@ const RegisterForm = () => {
             classNames={{
               label: "text-right",
               input: "text-right",
+              inputWrapper:
+                "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
             }}
           />
         )}
@@ -113,6 +116,7 @@ const RegisterForm = () => {
           defaultValue=""
           render={({ field }) => (
             <Input
+              radius="full"
               {...field}
               isRequired
               label="نام"
@@ -123,6 +127,8 @@ const RegisterForm = () => {
               classNames={{
                 label: "text-right",
                 input: "text-right",
+                inputWrapper:
+                  "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
               }}
             />
           )}
@@ -133,6 +139,7 @@ const RegisterForm = () => {
           defaultValue=""
           render={({ field }) => (
             <Input
+              radius="full"
               {...field}
               isRequired
               label="نام خانوادگی"
@@ -143,6 +150,8 @@ const RegisterForm = () => {
               classNames={{
                 label: "text-right",
                 input: "text-right",
+                inputWrapper:
+                  "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
               }}
             />
           )}
@@ -154,6 +163,7 @@ const RegisterForm = () => {
         defaultValue=""
         render={({ field }) => (
           <Input
+            radius="full"
             {...field}
             isRequired
             label="ایمیل"
@@ -165,6 +175,8 @@ const RegisterForm = () => {
             classNames={{
               label: "text-right",
               input: "text-right",
+              inputWrapper:
+                "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
             }}
           />
         )}
@@ -175,6 +187,7 @@ const RegisterForm = () => {
         defaultValue=""
         render={({ field }) => (
           <Input
+            radius="full"
             {...field}
             isRequired
             label="رمز عبور"
@@ -186,6 +199,8 @@ const RegisterForm = () => {
             classNames={{
               label: "text-right",
               input: "text-right",
+              inputWrapper:
+                "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
             }}
           />
         )}
@@ -196,6 +211,7 @@ const RegisterForm = () => {
         defaultValue=""
         render={({ field }) => (
           <Input
+            radius="full"
             {...field}
             isRequired
             label="تایید رمز عبور"
@@ -207,6 +223,8 @@ const RegisterForm = () => {
             classNames={{
               label: "text-right",
               input: "text-right",
+              inputWrapper:
+                "rounded-full bg-gray2 data-[hover=true]:bg-gray2 data-[focus=true]:bg-gray2 data-[disabled=true]:bg-gray2 data-[has-value=false]:bg-gray2 data-[filled=false]:bg-gray2",
             }}
           />
         )}

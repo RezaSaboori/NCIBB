@@ -15,15 +15,15 @@
 
 .header-container {
   position: fixed;
-  z-index: 999999;
-  top: 30px;
+  z-index: 500;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 0.5rem;
   gap: var(--header-spacing);
   font-family: var(--font-family-persian);
 }
@@ -37,6 +37,8 @@
 }
 
 .header-nav {
+  position: relative; /* Establish positioning context for ::before */
+  z-index: 1; /* Create a stacking context */
   display: flex;
   align-items: center;
   width: fit-content;
@@ -48,7 +50,23 @@
   font-size: var(--header-font-size);
   font-weight: var(--font-weight-bold);
   font-family: var(--font-family-persian);
-  background-color: color-mix(in srgb, var(--color-gray4) 12%, transparent);
+  /* Background styles are now moved to the ::before pseudo-element */
+}
+
+.header-nav::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1; /* Place behind the content */
+  border-radius: inherit;
+  background-image: linear-gradient(
+    135deg,
+    var(--color-gray1),
+    rgba(0, 0, 0, 0.05) 60%
+  );
   backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
   -webkit-backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
   box-shadow:
@@ -74,13 +92,29 @@
   direction: rtl;
 }
 
+#home-icon-nav {
+  background-image: linear-gradient(45deg, #f8a4c76c, #faa6de5b);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #ff80aab6 20%, transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, #ff80aab6 90%, transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, #ff80aab6 80%, transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, #571a2e67 60%, transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, #571a2e67 25%, transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, #571a2e67 15%, transparent),
+    inset 0px 3px 6px 0px color-mix(in srgb, #571a2e67 10%, transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000 calc(1 * 25%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 12%), transparent);
+}
+
 .header-nav--icon {
   width: var(--header-icon-size);
   height: var(--header-icon-size);
   border-radius: 50%;
   justify-content: center;
   align-self: center;
-  padding: 3px 3px 3px 4px;
+  padding: 5px;
 }
 
 .header-nav--icon .header-nav__control {
@@ -142,6 +176,8 @@
 }
 
 .header-nav__item {
+  position: relative; /* Establish stacking context for the text */
+  transform: translateZ(0px); /* Force element into its own rendering layer */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -220,9 +256,35 @@
     inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
 }
 
+.header-nav--icon.is-authenticated::before {
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.header-nav--icon.is-authenticated {
+  width: calc(var(--header-icon-size) + 4px);
+  height: calc(var(--header-icon-size) + 4px);
+}
+
+.header-nav--icon.is-authenticated .header-nav__icon {
+  box-shadow: none;
+}
+
+.header-nav__menu:not(:has(input:checked))::after {
+  opacity: 0;
+}
+
 /* Dark mode styles using theme variables */
-[data-theme="dark"] .header-nav {
-  background-color: color-mix(in srgb, var(--color-gray3) 15%, transparent);
+[data-theme="dark"] .header-nav::before {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-gray1),
+    rgba(255, 255, 255, 0.02) 60%
+  );
+  backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
+  -webkit-backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--color-gray8) 4%, transparent),
     inset 1.8px 3px 0px -2px
@@ -268,6 +330,34 @@
 
 [data-theme="dark"] .header-nav__control:hover {
   color: var(--color-blue);
+}
+
+[data-theme="dark"] .header-nav__item:hover {
+  color: var(--color-blue);
+}
+
+/* Ensure authenticated state overrides dark mode */
+[data-theme="dark"] .header-nav--icon.is-authenticated::before {
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .header-nav--icon #home-icon-nav {
+  background-image: linear-gradient(135deg, #f8a4c76c, #faa6de5b);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #ff80aab6 20%, transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, #ff80aab6 90%, transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, #ff80aab6 80%, transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, #571a2e67 60%, transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, #571a2e67 25%, transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, #571a2e67 15%, transparent),
+    inset 0px 3px 6px 0px color-mix(in srgb, #571a2e67 10%, transparent),
+    inset 2px -6.5px 1px -4px
+      color-mix(in srgb, #000 calc(1 * 25%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, #000 calc(1 * 15%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 12%), transparent);
 }
 
 /* Theme toggle specific styles */

@@ -56,18 +56,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         if obj.user.first_name and obj.user.last_name:
             return f"{obj.user.first_name} {obj.user.last_name}"
-        return obj.display_name or obj.user.username
+        return obj.user.username
     
     def get_initials(self, obj):
         if obj.user.first_name and obj.user.last_name:
             return f"{obj.user.first_name[0]}{obj.user.last_name[0]}".upper()
-        name = obj.display_name or obj.user.username
+        name = obj.user.username
         return name[:2].upper() if name else 'UN'
-    
-    def validate_bio(self, value):
-        if len(value) > 2000:
-            raise serializers.ValidationError("Bio must be less than 2000 characters")
-        return value
     
     def validate_profile_picture(self, value):
         if value:
@@ -209,8 +204,6 @@ class CompleteUserProfileSerializer(serializers.ModelSerializer):
     # with `source` to handle flat data structure.
     first_name = serializers.CharField(max_length=100, required=False)
     last_name = serializers.CharField(max_length=100, required=False)
-    display_name = serializers.CharField(source='profile.display_name', max_length=150, required=False, allow_blank=True)
-    bio = serializers.CharField(source='profile.bio', max_length=2000, required=False, allow_blank=True)
     job_title = serializers.CharField(source='profile.job_title', max_length=200, required=False, allow_blank=True)
     company = serializers.CharField(source='profile.company', max_length=200, required=False, allow_blank=True)
     department = serializers.CharField(source='profile.department', max_length=200, required=False, allow_blank=True)
@@ -230,7 +223,7 @@ class CompleteUserProfileSerializer(serializers.ModelSerializer):
             'username', 'email', 'phone', 'first_name', 'last_name', 
             
             # Writable fields for UserProfile (via source)
-            'display_name', 'bio', 'job_title', 'company', 'department',
+            'job_title', 'company', 'department',
             'city', 'state_province', 'country', 'gender'
         )
         read_only_fields = ('id', 'is_email_verified', 'is_phone_verified', 'last_activity', 'profile_completion_score')

@@ -43,7 +43,7 @@ const CompletionCard = ({ data, onRefresh }) => {
   }
 
   return (
-    <Card className="border-2 border-dashed border-primary-200 bg-primary-50/50 text-right">
+    <Card className="border-2 border-dashed border-primary-200 bg-primary-50/50 text-right rounded-4xl p-[var(--gap)] shadow-none">
       <CardHeader className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold text-primary-900">

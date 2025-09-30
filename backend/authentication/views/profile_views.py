@@ -150,31 +150,43 @@ class UserProfileViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
-    @action(detail=True, methods=['get'], url_path='completion-status')
-    def completion_status(self, request, pk=None):
+    @action(detail=False, methods=['get'], url_path='me/completion-status')
+    def completion_status(self, request):
         """Get profile completion status with recommendations"""
         try:
-            profile = self.get_object()
-            
+            profile, created = UserProfile.objects.get_or_create(user=request.user)
+            user = request.user
+
+            if not user:
+                return Response(
+                    {'error': 'User not found for this profile'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
             missing_fields = []
-            required_fields = {
-                'first_name': 'First Name',
-                'last_name': 'Last Name',
-                'bio': 'Biography', 
+            # Check fields on User model
+            if not user.first_name:
+                missing_fields.append({
+                    'field': 'first_name', 'label': 'First Name', 'priority': 'high'
+                })
+            if not user.last_name:
+                missing_fields.append({
+                    'field': 'last_name', 'label': 'Last Name', 'priority': 'high'
+                })
+
+            # Check fields on UserProfile model
+            profile_fields = {
                 'job_title': 'Job Title',
                 'company': 'Company',
                 'city': 'City',
                 'country': 'Country',
                 'profile_picture': 'Profile Picture'
             }
-            
-            for field, label in required_fields.items():
+
+            for field, label in profile_fields.items():
                 if not getattr(profile, field):
-                    priority = 'high' if field in ['first_name', 'last_name'] else 'medium'
                     missing_fields.append({
-                        'field': field,
-                        'label': label,
-                        'priority': priority
+                        'field': field, 'label': label, 'priority': 'medium'
                     })
             
             return Response({

@@ -7,6 +7,7 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react"
+import "./modal.css"
 
 const ImageCropModal = ({ isOpen, onClose, image, onSave }) => {
   // A proper implementation would use a library like react-image-crop
@@ -22,7 +23,11 @@ const ImageCropModal = ({ isOpen, onClose, image, onSave }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className={`modal-container ${isOpen ? "active" : ""}`}
+    >
       <ModalContent>
         <ModalHeader>Crop Profile Picture</ModalHeader>
         <ModalBody>

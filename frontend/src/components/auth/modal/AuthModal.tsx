@@ -10,6 +10,7 @@ import {
 } from "@heroui/react"
 import LoginForm from "../LoginForm"
 import RegisterForm from "../RegisterForm"
+import "./modal.css"
 
 interface AuthModalProps {
   isOpen: boolean
@@ -18,7 +19,12 @@ interface AuthModalProps {
 
 export const AuthModal = ({ isOpen, onOpenChange }: AuthModalProps) => {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      placement="top-center"
+      className="modal-container"
+    >
       <ModalContent>
         {(onClose) => (
           <>

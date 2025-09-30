@@ -73,7 +73,6 @@ class UserProfile(models.Model):
     # Personal Information
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True) 
-    display_name = models.CharField(max_length=150, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(
         max_length=20,
@@ -90,7 +89,6 @@ class UserProfile(models.Model):
     job_title = models.CharField(max_length=200, blank=True)
     company = models.CharField(max_length=200, blank=True)
     department = models.CharField(max_length=200, blank=True)
-    bio = models.TextField(max_length=2000, blank=True)
     website = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)
@@ -166,10 +164,10 @@ class UserProfile(models.Model):
     def calculate_completion(self):
         """Calculate profile completion percentage"""
         required_fields = [
-            'first_name', 'last_name', 'bio', 'job_title',
+            'first_name', 'last_name', 'job_title',
             'company', 'city', 'country', 'profile_picture'
         ]
-        completed_fields = sum(1 for field in required_fields if getattr(self, field))
+        completed_fields = sum(1 for field in required_fields if getattr(self, field, None))
         percentage = int((completed_fields / len(required_fields)) * 100)
         
         if self.profile_completion_percentage != percentage:

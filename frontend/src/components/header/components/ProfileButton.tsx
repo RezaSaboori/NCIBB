@@ -17,7 +17,11 @@ export const ProfileButton = ({
 
   return (
     <>
-      <fieldset className="header-nav header-nav--icon">
+      <fieldset
+        className={`header-nav header-nav--icon ${
+          isAuthenticated ? "is-authenticated" : ""
+        }`}
+      >
         <legend className="header-nav__legend">User Profile</legend>
         {isAuthenticated ? (
           <Link to="/profile">
