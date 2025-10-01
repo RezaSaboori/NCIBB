@@ -137,8 +137,8 @@
 [data-theme="dark"] .sidebar-nav {
   background-image: linear-gradient(
     135deg,
-    var(--color-gray2),
-    var(--color-gray1) 30%
+    var(--color-gray3),
+    var(--color-gray2) 30%
   );
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--color-gray8) 4%, transparent),

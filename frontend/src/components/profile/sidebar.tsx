@@ -106,6 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             name="nav-item"
             value="learning"
             checked={activeTab === "learning"}
+            onChange={() => onTabChange("learning")}
           />
           <Icon
             icon="ic:round-school"

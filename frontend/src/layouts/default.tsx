@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { useState } from "react"
 import { Outlet } from "react-router-dom"
+import { Footer } from "@/components/global/Footer"
 
 export default function DefaultLayout() {
   const [sidebar, setSidebar] = useState<React.ReactNode | null>(null)
@@ -20,9 +21,9 @@ export default function DefaultLayout() {
           <Outlet context={{ setSidebar }} />
         </main>
       )}
-      <footer className="w-full flex items-center justify-center py-3">
-        <span className="text-default-600">طراحی شده توسط NCIBB</span>
-      </footer>
+      <div className="pb-4">
+        <Footer />
+      </div>
     </div>
   )
 }

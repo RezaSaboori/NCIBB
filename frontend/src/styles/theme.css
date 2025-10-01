@@ -170,7 +170,7 @@
   --motion-easing-easeInOut: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-[data-theme="dark"] {
+.dark {
   --color-red: rgb(255, 66, 69);
   --color-orange: rgb(255, 146, 48);
   --color-yellow: rgb(255, 214, 0);
