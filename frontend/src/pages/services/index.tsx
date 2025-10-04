@@ -27,8 +27,8 @@ export const ServicesPage = () => {
 
       <ChatInput
         className={`${isTextVisible ? "fade-in-up" : ""}`}
-        buttonText="داده‌ای که می‌خواهید جستجو کنید رو توصیف کنید"
-        placeholderText="سعی کنید درخواستتون رو دقیق و کامل توصیف کنید"
+        buttonText="داده‌ای که می‌خواهید جستجو کنید رو توصیف کنید."
+        placeholderText="سعی کنید درخواستتون رو دقیق و کامل توصیف کنید."
       />
 
       <div className="spline-container">
