@@ -64,7 +64,7 @@
   border-radius: inherit;
   background-image: linear-gradient(
     135deg,
-    var(--color-gray1),
+    rgba(255, 255, 255, 0.5),
     rgba(0, 0, 0, 0.05) 60%
   );
   backdrop-filter: blur(4px) saturate(1.8) brightness(1.2);
