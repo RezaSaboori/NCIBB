@@ -3,9 +3,9 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Spinner, Alert, Button } from "@heroui/react"
 import { useSelector, useDispatch } from "react-redux"
 // @ts-expect-error JS module without types
-import { profileService } from "../../services/profileService"
+import { profileService } from "../../dataset_services/profileService"
 import { logoutSuccess } from "../../store/authSlice" // Import logout action
-import { authService } from "../../services/authService"
+import { authService } from "../../dataset_services/authService"
 import { useNavigate, useOutletContext } from "react-router-dom"
 // @ts-expect-error JSX module without types
 import ProfileForm from "./ProfileForm"

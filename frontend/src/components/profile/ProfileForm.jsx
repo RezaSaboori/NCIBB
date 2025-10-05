@@ -24,7 +24,7 @@ import {
   useDisclosure,
 } from "@heroui/react"
 import { Icon } from "@iconify/react"
-import { profileService } from "../../services/profileService"
+import { profileService } from "../../dataset_services/profileService"
 import ImageCropModal from "./ImageCropModal"
 import CompletionCard from "./CompletionCard"
 import "./modal.css"

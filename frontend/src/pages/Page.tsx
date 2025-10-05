@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { getPageData } from "../services/api"
+import { getPageData } from "../dataset_services/api"
 import { Hero } from "../components/marketing/Hero"
 import { FeatureGrid } from "../components/marketing/FeatureGrid"
 import { CallToAction } from "../components/marketing/CallToAction"

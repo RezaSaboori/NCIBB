@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* You may need to host IRANSansX fonts yourself */
+/* @font-face {
+  font-family: 'IRANSansX';
+  src: url('/path/to/IRANSansX-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+} */
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.font-IRANSansX {
+  font-family: "IRANSansX", "Inter", sans-serif;
+}
+
+.font-Inter {
+  font-family: "Inter", sans-serif;
+}

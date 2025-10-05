@@ -1,9 +1,5 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{{ title }}{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %}{{ title }}{%
+endblock %} {% block content %}
 <!-- Hero Section -->
 <section class="hero-section bg-gradient-primary text-white py-5">
   <div class="container">
@@ -40,7 +36,7 @@
   <div class="container">
     <div class="row text-center mb-5">
       <div class="col-12">
-        <h2 class="display-5 fw-bold mb-3">Our Services</h2>
+        <h2 class="display-5 fw-bold mb-3">Datasets</h2>
         <p class="lead text-muted">
           Comprehensive bioinformatics solutions for your research needs
         </p>
@@ -107,7 +103,7 @@
         <h2 class="display-6 fw-bold mb-3">Ready to Get Started?</h2>
         <p class="lead mb-4">
           Let us help you unlock the potential of your biological data with our
-          expert bioinformatics services.
+          expert bioinformatics datasets.
         </p>
         <a href="{% url 'main:contact' %}" class="btn btn-primary btn-lg">
           <i class="fas fa-rocket me-2"></i>Start Your Project
