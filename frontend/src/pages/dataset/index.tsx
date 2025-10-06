@@ -1,10 +1,12 @@
 // @ts-nocheck
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Spline from "@splinetool/react-spline"
 import { useTheme } from "@/components/theme/ThemeContext"
 import { ChatInput } from "@/components/ChatInput"
 import { DataCard } from "@/components/DataCard"
 import { useSplineButtonIndicator } from "./hooks/useSplineButtonIndicator"
+import { getDatabases } from "./utils/csv"
+import { DatabaseInfo } from "@/types/database"
 import "./styles.css"
 
 const TARGET_ID = "b647ec01-9216-4d75-8e14-935351259d8f" // from Copy Development Object ID in Spline
@@ -12,18 +14,29 @@ const TARGET_ID = "b647ec01-9216-4d75-8e14-935351259d8f" // from Copy Developmen
 export const DatasetPage = () => {
   const { theme } = useTheme()
   const [isTextVisible, setIsTextVisible] = useState(false)
+  const [isDataVisible, setIsDataVisible] = useState(false)
   const [activeButton, setActiveButton] = useState("datasaz")
+  const [databases, setDatabases] = useState<DatabaseInfo[]>([])
   const appRef = useRef(null)
   const objRef = useRef(null)
   const buttonsContainerRef = useRef(null)
 
   useSplineButtonIndicator(buttonsContainerRef, activeButton)
 
+  useEffect(() => {
+    const loadDatabases = async () => {
+      const data = await getDatabases()
+      setDatabases(data)
+    }
+    loadDatabases()
+  }, [])
+
   const handleSplineLoad = (app) => {
     appRef.current = app
     objRef.current = app.findObjectById(TARGET_ID)
     setTimeout(() => {
       setIsTextVisible(true)
+      setIsDataVisible(true)
     }, 2000)
   }
 
@@ -112,14 +125,44 @@ export const DatasetPage = () => {
         </div>
       </div>
       <div className="data-container">
-        <DataCard
-          size="38.0 MB"
-          year="2014"
-          rating={2}
-          title="CTU-CHB Intrapartum Cardiotocography Database"
-          description="552 cardiotocography records collected between 2010 and 2012 at the Czech Technical University and University Hospital in Brno."
-          tags={["fetal", "multiparameter", "heart rate"]}
-        />
+        <div className="data-column">
+          {databases
+            .filter((_, index) => index % 2 === 0)
+            .map((db, index) => (
+              <DataCard
+                key={db.name}
+                size={db.fileSizeKB}
+                year={db.year}
+                rating={db.rating}
+                title={db.name}
+                description={db.shortDescription}
+                tags={db.datasetVariables}
+                dataTypes={db.dataTypes}
+                reference={db.reference}
+                isVisible={isDataVisible}
+                animationDelay={index * 300} // Adjusted delay for column-based animation
+              />
+            ))}
+        </div>
+        <div className="data-column">
+          {databases
+            .filter((_, index) => index % 2 !== 0)
+            .map((db, index) => (
+              <DataCard
+                key={db.name}
+                size={db.fileSizeKB}
+                year={db.year}
+                rating={db.rating}
+                title={db.name}
+                description={db.shortDescription}
+                tags={db.datasetVariables}
+                dataTypes={db.dataTypes}
+                reference={db.reference}
+                isVisible={isDataVisible}
+                animationDelay={150 + index * 300} // Adjusted delay for column-based animation
+              />
+            ))}
+        </div>
       </div>
     </div>
   )

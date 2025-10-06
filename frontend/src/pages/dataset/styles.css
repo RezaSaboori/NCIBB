@@ -217,7 +217,5 @@
 }
 
 .data-container {
-  width: 100%;
-  min-height: 40vh;
-  box-sizing: border-box;
+  /* This class is now handled in DataCard.css */
 }

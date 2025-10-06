@@ -1,16 +1,10 @@
-/* Adapted from .sidebar-nav to create the footer container */
-.footer-nav {
+/* Adapted from .footer-nav to create the DataCard background */
+.data-card {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-sizing: border-box;
-  margin-top: 3rem;
-  padding: 2rem 0.5rem 2rem 0.5rem;
   border: none;
   border-radius: var(
-    --border-radius-container-xl
+    --border-radius-container-lg
   ); /* Changed from pill shape to rounded rectangle */
   font-size: 15px;
   background-image: linear-gradient(
@@ -41,7 +35,7 @@
 }
 
 /* Dark mode styles */
-.dark .footer-nav {
+.dark .data-card {
   background-image: linear-gradient(
     135deg,
     var(--color-gray3),
@@ -64,4 +58,39 @@
       color-mix(in srgb, #000000 calc(1 * 25%), transparent),
     0px 1px 5px 0px color-mix(in srgb, #000000 calc(1 * 15%), transparent),
     0px 6px 16px 0px color-mix(in srgb, #000000 calc(1 * 12%), transparent);
+}
+
+.data-container {
+  width: 80vw;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  direction: rtl;
+}
+
+.data-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.data-card.reveal {
+  opacity: 0;
+  animation-name: reveal;
+  animation-duration: 0.8s;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }

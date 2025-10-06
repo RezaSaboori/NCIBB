@@ -6,7 +6,7 @@ import "./footer.css"
 export const Footer: FC = () => {
   return (
     <footer
-      className="bg-gray11 text-gray12 py-12 rounded-t-4xl max-w-5xl mx-auto footer-nav"
+      className="bg-gray11 text-gray12 py-12 rounded-[var(--border-radius-container-lg)] max-w-5xl mx-auto footer-nav"
       dir="rtl"
     >
       <div className="container mx-auto px-8">
