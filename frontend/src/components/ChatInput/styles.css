@@ -33,7 +33,7 @@
 }
 
 .wrapper .button-content {
-  margin-left: 56px; /* 46px for button width + 10px gap */
+  margin-right: 2.25vw;
   position: relative; /* Gooey search content is positioned relative to the wrapper */
 }
 .wrapper .button-content .button-content-inner {
@@ -80,7 +80,7 @@
   width: 100%;
   color: var(--color-gray11);
   position: absolute;
-  left: -30px;
+  left: 0px;
   font-size: 14px;
 }
 .wrapper
@@ -130,7 +130,7 @@
   pointer-events: none;
   text-align: center;
   position: relative;
-  left: 4px;
+  left: 0px;
 }
 .wrapper .button-content .button-content-inner .search-btn .search-input {
   width: 100%;

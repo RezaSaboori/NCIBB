@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
+  Input,
 } from "@nextui-org/react"
 import { AnimatePresence, motion } from "framer-motion"
 import { useTheme } from "@/components/theme/ThemeContext"
@@ -27,15 +28,16 @@ const TARGET_ID = "b647ec01-9216-4d75-8e14-935351259d8f" // from Copy Developmen
 const chatInputConfig = {
   datasaz: {
     buttonText: "داده‌ای که می‌خواهید جستجو کنید رو توصیف کنید.",
-    placeholderText: "سعی کنید درخواستتون رو دقیق و کامل توصیف کنید.",
+    placeholderText: "مثال: داده‌ای با ۱۰۰۰ سطر و ستون‌های سن، جنسیت و تحصیلات",
   },
   datayab: {
     buttonText: "ویژگی‌های داده مورد نظر خود را برای ساخت وارد کنید.",
-    placeholderText: "مثال: داده‌ای با ۱۰۰۰ سطر و ستون‌های سن، جنسیت و تحصیلات",
+    placeholderText:
+      "مثال: داده ای برای پیش بینی نارسایی قلب از روی داده نوار قلب",
   },
   manual: {
     buttonText: "پرسش خود را در مورد داده‌ها اینجا وارد کنید.",
-    placeholderText: "مثال: میانگین سنی افراد در داده «سلامت» چقدر است؟",
+    placeholderText: 'مثال: "ECG" AND "Heart Failure" OR "Heart Disease"',
   },
 }
 
@@ -63,6 +65,7 @@ export const DatasetPage = () => {
   const [manualSort, setManualSort] = useState<"all" | Set<string>>(
     new Set(["سال"])
   )
+  const [filterSearch, setFilterSearch] = useState("")
   const appRef = useRef(null)
   const objRef = useRef(null)
   const modesContainerRef = useRef(null)
@@ -367,7 +370,26 @@ export const DatasetPage = () => {
                     onSelectionChange={(keys) =>
                       setSelectedFilters(keys as "all" | Set<string>)
                     }
-                    className="max-h-60 overflow-y-auto scrollbar-thin custom-scrollbar"
+                    topContent={
+                      <Input
+                        isClearable
+                        radius="full"
+                        placeholder="جستجوی فیلتر"
+                        value={filterSearch}
+                        onValueChange={setFilterSearch}
+                        onClear={() => setFilterSearch("")}
+                        className="filter-search-input"
+                        style={{
+                          backgroundColor: "var(--color-gray5)",
+                        }}
+                        classNames={{
+                          inputWrapper: "bg-gray3",
+                        }}
+                      />
+                    }
+                    classNames={{
+                      list: "max-h-60 overflow-y-auto scrollbar-thin custom-scrollbar",
+                    }}
                     itemClasses={{
                       base: [
                         "text-[var(--color-gray11)]",
@@ -379,9 +401,13 @@ export const DatasetPage = () => {
                       ],
                     }}
                   >
-                    {filterTags.map((tag) => (
-                      <DropdownItem key={tag}>{tag}</DropdownItem>
-                    ))}
+                    {filterTags
+                      .filter((tag) =>
+                        tag.toLowerCase().includes(filterSearch.toLowerCase())
+                      )
+                      .map((tag) => (
+                        <DropdownItem key={tag}>{tag}</DropdownItem>
+                      ))}
                   </DropdownMenu>
                 </Dropdown>
 

@@ -1,12 +1,12 @@
 export const buttonVariants = {
-  initial: { x: 0, width: "clamp(100px, 30vw, 1500px)" },
-  step1: { x: 0, width: "clamp(100px, 30vw, 1500px)" },
-  step2: { x: -30, width: "clamp(180px, 35vw, 1500px)" },
+  initial: { x: 0, width: "clamp(180px, 30vw, 1500px)" },
+  step1: { x: 0, width: "clamp(180px, 30vw, 1500px)" },
+  step2: { x: 0, width: "clamp(180px, 30vw, 1500px)" },
 }
 
 export const iconVariants = {
-  hidden: { x: -50, opacity: 0 },
-  visible: { x: 24, opacity: 1 },
+  hidden: { x: "-1rem", opacity: 0 },
+  visible: { x: "3.5rem", opacity: 1 },
 }
 
 export const refreshButtonVariants = (isUnsupported: boolean) => ({

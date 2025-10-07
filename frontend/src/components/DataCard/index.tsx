@@ -6,6 +6,7 @@ import {
   CardFooter,
   Chip,
   Button,
+  Tooltip,
 } from "@nextui-org/react"
 import { Icon } from "@iconify/react"
 import "./DataCard.css"
@@ -142,6 +143,15 @@ const dataTypeIcons: { [key: string]: IconData } = {
   },
 }
 
+const dataTypeTooltipBg: { [key: string]: string } = {
+  image: "bg-[var(--color-mint)]",
+  text: "bg-[var(--color-purple)]",
+  sequence: "bg-[var(--color-orange)]",
+  omics: "bg-[var(--color-blue)]",
+  table: "bg-[var(--color-indigo)]",
+  signal: "bg-[var(--color-yellow)]",
+}
+
 export const DataCard: React.FC<DataCardProps> = ({
   size,
   year,
@@ -232,14 +242,25 @@ export const DataCard: React.FC<DataCardProps> = ({
               ? `var(${iconData.color})`
               : "var(--color-gray5)"
 
+            const tooltipBgClass = isAvailable
+              ? dataTypeTooltipBg[key]
+              : "bg-[var(--color-gray5)]"
+
             return (
-              <Icon
+              <Tooltip
                 key={key}
-                icon={iconData.icon}
-                width={iconData.width}
-                height={iconData.height}
-                style={{ ...iconData.style, color }}
-              />
+                content={key.charAt(0).toUpperCase() + key.slice(1)}
+                classNames={{
+                  content: `text-white ${tooltipBgClass}`,
+                }}
+              >
+                <Icon
+                  icon={iconData.icon}
+                  width={iconData.width}
+                  height={iconData.height}
+                  style={{ ...iconData.style, color }}
+                />
+              </Tooltip>
             )
           })}
         </div>

@@ -336,7 +336,7 @@
 
 .input-refresh-container .refresh-fab {
   position: absolute;
-  left: 35px; /* Position it to the left of the input */
+  left: 0px; /* Position it to the left of the input */
   top: 13%;
   transform: translateY(-50%);
   width: 40px;
@@ -354,7 +354,7 @@
 }
 
 .input-refresh-container.step-2 .refresh-fab {
-  left: -85px;
+  left: 0px;
 }
 
 .dark .input-refresh-container .refresh-fab {
@@ -390,4 +390,15 @@
 .ltr-direction {
   direction: ltr;
   text-align: left;
+}
+
+.filter-search-input div[data-slot="input-wrapper"] {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.filter-search-input input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
