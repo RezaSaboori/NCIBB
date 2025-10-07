@@ -57,6 +57,9 @@ export const DatasetPage = () => {
   const [selectedSort, setSelectedSort] = useState<"all" | Set<string>>(
     new Set(["سال"])
   )
+  const [selectedSearchSubject, setSelectedSearchSubject] = useState<
+    "all" | Set<string>
+  >(new Set(["همه"]))
   const [manualSort, setManualSort] = useState<"all" | Set<string>>(
     new Set(["سال"])
   )
@@ -150,7 +153,11 @@ export const DatasetPage = () => {
     setDataContainerAnimationClass("fade-out")
     await new Promise((resolve) => setTimeout(resolve, fadeAnimationTime))
 
-    const results = await searchInCsv(query)
+    const subject =
+      selectedSearchSubject instanceof Set
+        ? selectedSearchSubject.values().next().value
+        : "همه"
+    const results = await searchInCsv(query, subject)
     const searchDuration = Date.now() - searchStartTime
 
     // Ensure the loading animation is visible for a minimum duration.
@@ -183,7 +190,7 @@ export const DatasetPage = () => {
         allTags.add(tag)
       })
     })
-    return Array.from(allTags)
+    return Array.from(allTags).sort((a, b) => a.localeCompare(b, "fa"))
   }, [databases])
 
   const displayedDatabases =
@@ -281,6 +288,57 @@ export const DatasetPage = () => {
                 <Dropdown
                   showArrow={true}
                   classNames={{
+                    content: "rounded-3xl",
+                  }}
+                >
+                  <DropdownTrigger>
+                    <Button
+                      variant="solid"
+                      className="sort-dropdown-trigger rounded-full"
+                      style={{
+                        backgroundColor: "var(--color-gray1)",
+                        fontFamily: "var(--font-family-persian)",
+                        fontWeight: "var(--font-weight-medium)",
+                        fontSize: "var(--font-size-sm)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      موضوع جستجو:{" "}
+                      {typeof selectedSearchSubject === "string"
+                        ? selectedSearchSubject
+                        : selectedSearchSubject.values().next().value}
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    aria-label="Single selection for search subject"
+                    variant="flat"
+                    disallowEmptySelection
+                    selectionMode="single"
+                    selectedKeys={selectedSearchSubject}
+                    onSelectionChange={(keys) => {
+                      const newSearchSubject = keys as "all" | Set<string>
+                      setSelectedSearchSubject(newSearchSubject)
+                    }}
+                    itemClasses={{
+                      base: [
+                        "text-[var(--color-gray11)]",
+                        "data-[hover=true]:bg-default-100",
+                        "rounded-full",
+                        "px-3",
+                        "font-family: var(--font-family-persian);",
+                        "font-weight: var(--font-weight-medium);",
+                        "font-size: var(--font-size-sm);",
+                      ],
+                    }}
+                  >
+                    <DropdownItem key="همه">همه</DropdownItem>
+                    <DropdownItem key="عنوان">عنوان</DropdownItem>
+                    <DropdownItem key="توضیحات">توضیحات</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                <Dropdown
+                  showArrow={true}
+                  classNames={{
                     content: "rounded-3xl bg-gray1",
                   }}
                 >
@@ -316,6 +374,8 @@ export const DatasetPage = () => {
                         "data-[hover=true]:bg-[var(--color-gray3)]",
                         "rounded-full",
                         "px-3",
+                        "ltr-direction",
+                        "flex-row-reverse",
                       ],
                     }}
                   >

@@ -386,3 +386,8 @@
     border-radius: 100px;
   }
 }
+
+.ltr-direction {
+  direction: ltr;
+  text-align: left;
+}
