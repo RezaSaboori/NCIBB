@@ -58,7 +58,7 @@ export const DatasetPage = () => {
     new Set(["سال"])
   )
   const [manualSort, setManualSort] = useState<"all" | Set<string>>(
-    new Set(["امتیاز"])
+    new Set(["سال"])
   )
   const appRef = useRef(null)
   const objRef = useRef(null)
@@ -355,9 +355,13 @@ export const DatasetPage = () => {
                     disallowEmptySelection
                     selectionMode="single"
                     selectedKeys={selectedSort}
-                    onSelectionChange={(keys) =>
-                      setSelectedSort(keys as "all" | Set<string>)
-                    }
+                    onSelectionChange={(keys) => {
+                      const newSort = keys as "all" | Set<string>
+                      setSelectedSort(newSort)
+                      if (activeMode === "manual") {
+                        setManualSort(newSort)
+                      }
+                    }}
                     itemClasses={{
                       base: [
                         "text-[var(--color-gray11)]",
