@@ -29,6 +29,7 @@
     "@react-aria/visually-hidden": "3.8.27",
     "@react-types/shared": "3.32.0",
     "@reduxjs/toolkit": "^2.9.0",
+    "@splinetool/react-spline": "^4.1.0",
     "@tailwindcss/postcss": "4.1.11",
     "@tailwindcss/vite": "4.1.11",
     "axios": "^1.12.2",

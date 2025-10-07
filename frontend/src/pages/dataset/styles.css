@@ -1,36 +1,45 @@
 @import "../../styles/theme.css";
 
+.holistic-page-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .robot-container {
   position: relative;
   width: 100%;
   height: 50vh;
-  overflow: hidden;
+  display: flex;
+  justify-content: center; /* Center children horizontally */
+  align-items: flex-end; /* Align children to the bottom */
+  pointer-events: none; /* Allow pointer events to pass through */
 }
 
 .spline-container {
+  position: absolute;
+  top: -20rem;
+  left: 0;
   width: 100%;
-  height: 90vh;
-  overflow: hidden;
+  height: 100vh;
 }
 
 .spline-canvas {
-  width: 100%;
-  height: 200%;
-  transform: translateY(-25%);
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translate(-50%, calc(-50% + 20px));
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%);
+    transform: translateY(0);
   }
 }
 
-.spline-buttons-container {
+.data-finder-modes-container {
   position: relative;
   z-index: 1;
   display: flex;
@@ -46,7 +55,7 @@
   text-align: center;
 }
 
-.spline-buttons-container::before {
+.data-finder-modes-container::before {
   content: "";
   position: absolute;
   top: 0;
@@ -81,7 +90,7 @@
     box-shadow var(--motion-duration-slow) var(--motion-easing-easeInOut);
 }
 
-.dark .spline-buttons-container::before {
+.dark .data-finder-modes-container::before {
   background-image: linear-gradient(
     135deg,
     rgba(104, 104, 104, 0.3),
@@ -108,7 +117,7 @@
     0px 6px 16px 0px color-mix(in srgb, #000 calc(1 * 12%), transparent);
 }
 
-.spline-buttons-container::after {
+.data-finder-modes-container::after {
   content: "";
   position: absolute;
   top: 10%;
@@ -135,7 +144,7 @@
     inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
 }
 
-.dark .spline-buttons-container::after {
+.dark .data-finder-modes-container::after {
   background-color: color-mix(in srgb, var(--color-blue) 90%, transparent);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, #01eeff 20%, transparent),
@@ -147,7 +156,7 @@
     inset 0px 3px 6px 0px color-mix(in srgb, #000820 10%, transparent);
 }
 
-.spline-button {
+.data-finder-mode {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -165,57 +174,215 @@
   font-size: var(--font-size-sm);
 }
 
-.spline-button.active {
+.data-finder-mode.active {
   color: var(--color-gray1);
 }
 
-.spline-button:not(.active):hover {
+.data-finder-mode:not(.active):hover {
   color: var(--color-blue);
 }
 
-.dark .spline-button {
+.dark .data-finder-mode {
   color: var(--color-gray12);
 }
 
-.dark .spline-button.active {
+.dark .data-finder-mode.active {
   color: var(--color-gray1);
 }
 
-.dark .spline-button:not(.active):hover {
+.dark .data-finder-mode:not(.active):hover {
   color: var(--color-blue);
 }
 
-.chat-input-container {
-  opacity: 0;
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
+.holistic-input-container {
+  position: absolute; /* Let flexbox handle positioning */
+  top: 30vh;
+  z-index: 1; /* Place it on top of the spline container */
   display: flex;
   flex-direction: column;
+  justify-content: top;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
   width: clamp(180px, 35vw, 1500px);
+  height: fit-content;
+  opacity: 0;
+  padding-bottom: 2rem;
+  pointer-events: auto; /* Make this container and its children interactive */
 }
 
-.chat-input-container.fade-in-up {
+.holistic-input-container.fade-in-up {
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.chat-input-wrapper {
-  position: relative;
+.search-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-controls.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.search-controls.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+.controls-container {
   display: flex;
   justify-content: center;
-  width: 100%;
+  align-items: center;
+  gap: 10px;
 }
 
 .chat-input-override.wrapper {
-  position: unset;
+  position: relative;
+  z-index: 1;
   transform: none;
   opacity: 1; /* Ensure it's visible */
+  top: unset;
+  left: unset;
 }
 
 .data-container {
-  /* This class is now handled in DataCard.css */
+  position: relative; /* Ensure it renders on top of the spline background */
+  pointer-events: none; /* Allow pointer events to pass through */
+}
+
+.data-container.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.data-container.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+.data-container.manual-mode {
+  margin-top: 5rem;
+}
+
+.generated-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  pointer-events: auto; /* Make content interactive */
+}
+
+.generated-image {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.no-results-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 200px;
+  color: var(--color-gray11);
+  text-align: center;
+  font-family: var(--font-family-persian);
+  pointer-events: auto; /* Make content interactive */
+}
+
+.dark .no-results-message {
+  color: var(--color-gray11);
+}
+
+.no-results-message p {
+  margin: 0.25rem 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.data-column {
+  pointer-events: auto; /* Make data cards interactive */
+}
+
+.input-refresh-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-refresh-container .refresh-fab {
+  position: absolute;
+  left: 35px; /* Position it to the left of the input */
+  top: 13%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 9999px;
+  background-color: var(--color-gray1);
+  color: var(--color-gray11);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 2;
+  transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.input-refresh-container.step-2 .refresh-fab {
+  left: -85px;
+}
+
+.dark .input-refresh-container .refresh-fab {
+  background-color: var(--color-gray3);
+  color: var(--color-gray12);
+}
+
+.dark .input-refresh-container .refresh-fab svg path {
+  fill: var(--color-gray12);
+}
+
+.input-refresh-container .chat-input-override {
+  width: 100%;
+}
+
+.custom-scrollbar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray6) !important;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-gray5);
+    border-radius: 100px;
+  }
 }
